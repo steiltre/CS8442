@@ -1,0 +1,186 @@
+%        File: hw1.tex
+%     Created: Mon Jan 23 07:00 PM 2017 C
+% Last Change: Mon Jan 23 07:00 PM 2017 C
+%
+
+\documentclass[a4paper]{article}
+
+\title{CSci 8442 Homework 1 }
+\date{2/13/17}
+\author{Trevor Steil}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{esint}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{bbm}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{claim}{Claim}
+%\newtheorem*{problem}{Problem}
+%\newtheorem*{lemma}{Lemma}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\supp}[1]{\mathop{\mathrm{supp}}\left(#1\right)}
+\newcommand{\lip}[1]{\mathop{\mathrm{Lip}}\left(#1\right)}
+\newcommand{\curl}{\mathrm{curl}}
+\newcommand{\la}{\left \langle}
+\newcommand{\ra}{\right \rangle}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\div}{\mathrm{div}}
+
+\newenvironment{problem}{\textbf{Problem.}}
+
+\newenvironment{solution}[1][]{\emph{Solution #1}}
+
+\algnewcommand{\Or}{\textbf{ or }}
+\algnewcommand{\And}{\textbf{ or }}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+  \item
+    \begin{problem}
+      Let $S = \{ p_1, \dots, p_n \}$ be a set of $n$ points in the plane, each represented by its $x$ and $y$ coordinates. A common operation in
+      many geometric algorithms is to sort the points of $S$ around the origin by polar angle, in (say) counterclockwise order from the positive
+      $x$-axis. (Assume that ties between points with the same polar angle are broken arbitrarily.) Give an $O(n \log n)$-time algorithm for this
+      problem. Your algorithm should not compare points explicitly using their polar angles; instead, it should use cross-products.
+
+      Give a brief description of the main ideas from which the correctness of your method should be evident, augment this with high-level pseudocode as
+      in the text, and analyze the running time.
+    \end{problem}
+
+    \begin{solution}
+
+      We have the comparison operator ``$\prec$'' such that $\overrightarrow{op} \prec \overrightarrow{oq}$ if the polar angle between the $x$-axis
+      and the segment $\overrightarrow{op}$ is less than the angle between the $x$-axis and $\overrightarrow{oq}$. The basic idea for this algorithm
+      is that with this comparison operator, we are able to use a merge-sort on the polar angles to sort them in $O(n \log n)$ time.
+
+      Before we sort these angles, we must split the points into points above the $x$-axis and points below the $x$-axis. This is to avoid large
+      angles in the counterclockwise direction being counted as small angles in the clockwise direction. After sorting the two subsets, we concatenate
+      the sorted list with negative $y$-values to the end of the sorted list with positive $y$-values. This will yield the correct answer if both
+      subsets are sorted because all points $p$ with positive $y$-values will form an angle with the positive $x$-axis satisfying $0 < \theta_p < \pi$, and
+      all points with negative $y$-values will form an angle with the positive $x$-axis satisfying $\pi < \theta_p < 2 \pi$.
+
+      The above does not explicitly handle the case of points on the $x$-axis. To do so, we group points on the $x$-axis with positive $x$-values with points having
+      positive $y$-values, and points on the $x$-axis with negative $x$-values with points having negative $y$-values. It is also important to note
+      that the comparison operator $\prec$ allows the polar angles to be sorted without ever actually computing any angle measures.
+
+      These ideas give us the following pseudocode:
+      \begin{algorithmic}[1]
+        \Function {AngleSort}{$S$}
+        \State $S_+ \gets \{ p = (x,y) | y > 0 \}$
+        \State $S_- \gets \{ p = (x,y) | y < 0 \}$
+        \State $\tilde{S}_+ \gets MergeSort(S_+)$ using the comparison operator $\prec$
+        \State $\tilde{S}_- \gets MergeSort(S_-)$ using the comparison operator $\prec$
+        \State
+        \Return $Concatenate(\tilde{S}_+, \tilde{S}_-)$
+        \EndFunction
+      \end{algorithmic}
+
+      Splitting $S$ into $S_+$ and $S_-$ is done by scanning $S$, which takes $O(n)$ time. Each of the merge sorts takes $O(n \log n)$ time.
+      Therefore, this algorithm runs in $O(n \log n)$ time.
+
+    \end{solution}
+
+  \item
+    \begin{problem} The paper below gives elegant, output-sensitive algorithms to compute the convex hull of $n$ points in 2D and 3D, in time $O(n \log h)$, where
+      $h$ is the size of the hull. (This bound is optimal.)
+      \begin{itemize}
+        \item T.M. Chan. Optimal output-sensitive convex hull algorithms in two and three dimensions. \textit{Discrete \& Computational Geometry},
+          16:361-368, 1996.
+      \end{itemize}
+
+      A link to the paper can be found on the class web page.
+
+      Explain, in your own words, the main ideas behind the 2D algorithm in Section 2.
+    \end{problem}
+
+    \begin{solution}
+    \end{solution}
+
+  \item
+    \begin{problem}
+      Problem 2.14, p. 43
+
+      Let $S$ be a set of $n$ disjoint line segments in the plane, and let $p$ be a point not on any of the line segments of $S$. We wish to determine
+      all line segments of $S$ that $p$ can see, that is, all line segments of $S$ that contain some point $q$ so that the open segment
+      $\overline{pq}$ doesn't intersect any line segment of $S$. Give an $O(n \log n)$ time algorithm for this problem that uses a rotating half-line
+      with its endpoint at $p$.
+    \end{problem}
+
+    \begin{solution}
+
+      This algorithm will make use of a sweeping line that rotates about the point $p$. We will use an event queue, $Q$, to keep track of when segments are
+      to be added and removed. To get segments in the correct order for the sweep line we are using, we use the \texttt{AngleSort} function found in
+      problem 1 on the endpoints of the intervals in $S$. We will use a balanced tree, $T$, to keep track of what segments are ``blocking'' each other from $p$'s sight.
+
+      Because the line segments are disjoint, we know that if
+      segment $l_1$ ``blocks'' $l_2$ from view as the sweeping line rotates, the next time $l_2$ may be seen is after $l_1$ is removed. Because of
+      this, the only event points we need to track are when segments start intersecting the sweep line and when segments stop intersecting the sweep
+      line. We can presort the polar angle values of the endpoints of the line segments to fill this event queue before the sweep line begins
+      rotating.
+
+      We are going to order the tree $T$ by proximity to $p$. When a line segment $l = \overline{qr}$ which starts at $q$ and travels counterclockwise
+      to $r$ is being added to $T$, we can compare its proximity to $p$ relative to other segments in $T$ using a sidedness test. For $l' =
+      \overline{st} \in T$, where $\overline{st}$ is traversed in the counterclockwise direction, $l$ is closer to $p$ than $l'$ is if $q$ lies to the
+      left of $\overline{st}$. This ``left of'' comparison is how we compare segments when adding them to $T$. By the above observation, two segments
+      never switch places in the tree once they have been added.
+
+      As the sweep line rotates, $p$ can see at most one segment at any point in time. Therefore, at each of the event points given by endpoints of
+      the line segments, we must simply add the closest segment to $p$ to the list of segments visible to $p$.
+
+      We have the following pseudocode:
+
+      \begin{algorithmic}[1]
+
+        \Function{VisibleSegments}{$S,p$}
+
+        \State $T \gets \emptyset$
+        \State $V \gets \emptyset$
+        \State Shift coordinates so $p$ is at the origin
+        \State $Q \gets \{ \text{ endpoints of segments in } S \}$ where endpoints are associated to the segments they are part of
+        \State $Q \gets \texttt{AngleSort}(Q)$ where ties are broken in favor of points closer to the origin (for handling degeneracies)
+        \For {$q \in Q$}
+        \If { $q$ is a left endpoint }
+        \State $T.Insert(q.interval)$
+        \ElsIf { $q$ is a right endpoint }
+        \State $T.Remove(q.interval)$
+        \EndIf
+        \State $V \gets V \cup T.minimum$
+        \EndFor
+
+        \State
+        \Return V
+
+        \EndFunction
+
+      \end{algorithmic}
+
+      Shifting the coordinate system requires adding $-p$ to $p$ and the endpoints of all intervals in $S$, which can be done in $O(n)$ time. As was
+      shown in Problem 1, the \texttt{AngleSort} takes $O( n \log n )$ time. Next, we loop over each interval endpoint and either add or remove the
+      associated interval to the balanced tree. Each of these insertions and deletions can be done in $O(\log n)$ time. The loop therefore runs in
+      $O(n \log n)$ time. Thus, the overall running time of this algorithm is $O(n \log n)$.
+
+      This algorithm needs to be modified to handle a few special cases at this point. First, this algorithm doesn't catch intervals that span the
+      positive $x$-axis (test positive $x$-axis for intersection with every interval when initializing $T$). There are also unhandled cases when two
+      endpoints (belonging to the same segment or different segments) have the same polar angle.
+
+    \end{solution}
+\end{enumerate}
+\end{document}
