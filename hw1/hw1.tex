@@ -112,6 +112,45 @@
     \end{problem}
 
     \begin{solution}
+
+      Using Graham's algorithm, we have a way of computing the convex hull of $m$ points in $O(m \log m)$ time. By splitting the original set $S$ of $n$
+      points into $k$ subsets $S_1, \dots, S_k$ of size $\frac{n}{k}$, we can compute convex hulls for each subset in $O \left( \frac{n}{k} \log \frac{n}{k} \right)$
+      time. Let these smaller convex hulls be $H_1, \dots, H_k$. Sequentially computing all $k$ convex hulls then takes $O \left( k \cdot \frac{n}{k} \log \frac{n}{k} \right) = O \left( n \log
+      \frac{n}{k} \right)$ time.
+
+      We are going to incrementally construct our convex hull by using the smaller convex hulls we have already computed to limit the possible next
+      points to add to the larger convex hull. Let $\{ p_1, \dots, p_{i-1} \}$ be the current chain in the construction of the convex hull. If we look
+      at a single subset of our points, $S_j$, the only possible point $p' \in H_j$ that could be the next point in the larger convex hull is the
+      point $\overline{p_{i-1} p'}$ is tangent to $H_j$. Any other point $q \in S_j$ couldn't be a possible next point because the segment
+      $\overline{pq}$ would cause a violation of the sidedness condition for edges in convex hulls. (There are two points in $H_j$ that satisfy this
+      condition, but one will clearly put the set $S_j$ ``outside'' of the convex hull.) Using a binary search, finding this possible point $p' \in
+      H_j$ can be performed in $O \left( \log \frac{n}{k} \right)$ time.
+
+      Each of our smaller hulls $H_1, \dots, H_k$ gives a possible next point to add to the larger convex hull. To choose the correct one, we must
+      scan the $k$ candidates and see which one maximizes the angle measure of $\angle p_{i-2} p_{i-1} p'$ to again satisfy the sidedness condition
+      for edges in convex hulls. Computing these $k$ candidate points takes $O \left( k \log \frac{n}{k} \right)$ time. Choosing the correct next
+      point in the convex hull from among these candidates takes $O(k)$ time given our constant-time primitive for comparing angle measures, giving a
+      $O \left( k \log \frac{n}{k} \right)$ way of computing the next point to add to our convex hull. If we let $h$ be the size of the convex hull,
+      this process of adding points takes $O \left( h k \log \frac{n}{k} \right)$ time.
+
+      Combining the preprocessing step of computing the smaller convex hulls and incrementally computing the larger convex hull then takes $O \left( n
+      \log \frac{n}{k} + h k \log \frac{n}{k} \right)$ time. If we knew the size of the hull before beginning the computation, we could set
+      $\frac{n}{k} = h$, and the running time would simplify to $O(n \log h)$. Unfortunately, we do not know $h$ a priori.
+
+      We can overcome this by modifying the algorithm to stop after $H$ steps. If the convex hull has been completed (the final point will be the same
+      as the beginning point), the convex hull is returned. Otherwise, an ``incomplete'' is returned. To complete this (possibly successful)
+      computation will now take $O \left( n \log \frac{n}{k} + H k \log \frac{n}{k} \right)$ time. By choosing to split the $n$ points into $k =
+      \frac{n}{H}$ points, this time bound simplifies to $O (n \log H)$. We can now repeatedly use this algorithm until the convex hull is completed
+      with a sequence of $H$ values that increases rapidly enough to give the desired running time.
+
+      With this modified algorithm, we choose $H = 2^{2^t}$ for $t = 1,2,\dots$ and stop the first time the convex hull is returned. Each individual
+      use of the algorithm then takes $O(n \log 2^{2^t}) = O(n 2^t)$ time. This process will stop when $t = \lceil \log \log h \rceil$. Adding the
+      costs for all of the iterations gives a running time of
+      \begin{align*}
+        O \left( n \sum_{t=1}^{\lceil \log \log h \rceil} 2^t \right) &= O \left( n 2^{\lceil \log \log h \rceil + 1} \right) \\
+        &= O(n \log h)
+      \end{align*}
+
     \end{solution}
 
   \item
@@ -122,6 +161,7 @@
       all line segments of $S$ that $p$ can see, that is, all line segments of $S$ that contain some point $q$ so that the open segment
       $\overline{pq}$ doesn't intersect any line segment of $S$. Give an $O(n \log n)$ time algorithm for this problem that uses a rotating half-line
       with its endpoint at $p$.
+
     \end{problem}
 
     \begin{solution}
