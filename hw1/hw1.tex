@@ -69,16 +69,17 @@
 
       We have the comparison operator ``$\prec$'' such that $\overrightarrow{op} \prec \overrightarrow{oq}$ if the polar angle between the $x$-axis
       and the segment $\overrightarrow{op}$ is less than the angle between the $x$-axis and $\overrightarrow{oq}$. The basic idea for this algorithm
-      is that with this comparison operator, we are able to use a merge-sort on the polar angles to sort them in $O(n \log n)$ time.
+      is that with this (constant time) comparison operator, we are able to use a merge-sort on the polar angles to sort them in $O(n \log n)$ time.
 
       Before we sort these angles, we must split the points into points above the $x$-axis and points below the $x$-axis. This is to avoid large
-      angles in the counterclockwise direction being counted as small angles in the clockwise direction. After sorting the two subsets, we concatenate
+      angles in the counterclockwise direction being counted as small negative angles in the clockwise direction. After sorting the two subsets, we concatenate
       the sorted list with negative $y$-values to the end of the sorted list with positive $y$-values. This will yield the correct answer if both
       subsets are sorted because all points $p$ with positive $y$-values will form an angle with the positive $x$-axis satisfying $0 < \theta_p < \pi$, and
       all points with negative $y$-values will form an angle with the positive $x$-axis satisfying $\pi < \theta_p < 2 \pi$.
 
       The above does not explicitly handle the case of points on the $x$-axis. To do so, we group points on the $x$-axis with positive $x$-values with points having
-      positive $y$-values, and points on the $x$-axis with negative $x$-values with points having negative $y$-values. It is also important to note
+      positive $y$-values, and points on the $x$-axis with negative $x$-values with points having negative $y$-values. This assigns the angle measure
+      of $0$ to points on the positive $x$-axis and allows the algorithm to distinguish between angles of $0$ and $\pi$ radians. It is also important to note
       that the comparison operator $\prec$ allows the polar angles to be sorted without ever actually computing any angle measures.
 
       These ideas give us the following pseudocode:
@@ -121,9 +122,10 @@
       We are going to incrementally construct our convex hull by using the smaller convex hulls we have already computed to limit the possible next
       points to add to the larger convex hull. Let $\{ p_1, \dots, p_{i-1} \}$ be the current chain in the construction of the convex hull. If we look
       at a single subset of our points, $S_j$, the only possible point $p' \in H_j$ that could be the next point in the larger convex hull is the
-      point $\overline{p_{i-1} p'}$ is tangent to $H_j$. Any other point $q \in S_j$ couldn't be a possible next point because the segment
+      point such that $\overline{p_{i-1} p'}$ is tangent to $H_j$. Any other point $q \in S_j$ couldn't be a possible next point because the segment
       $\overline{pq}$ would cause a violation of the sidedness condition for edges in convex hulls. (There are two points in $H_j$ that satisfy this
-      condition, but one will clearly put the set $S_j$ ``outside'' of the convex hull.) Using a binary search, finding this possible point $p' \in
+      tangency condition, but one will clearly put the set $S_j$ ``outside'' of the convex hull. The correct point of these two can be determined by
+      checking the sidedness of a single point in $S_j$ and the sidedness of $p_{i-2}$ against the candidate edges.) Using a binary search, finding this possible point $p' \in
       H_j$ can be performed in $O \left( \log \frac{n}{k} \right)$ time.
 
       Each of our smaller hulls $H_1, \dots, H_k$ gives a possible next point to add to the larger convex hull. To choose the correct one, we must
@@ -185,17 +187,21 @@
       As the sweep line rotates, $p$ can see at most one segment at any point in time. Therefore, at each of the event points given by endpoints of
       the line segments, we must simply add the closest segment to $p$ to the list of segments visible to $p$.
 
+      In order to begin this sweepline algorithm, we must find the segments that begin in $T$. These segments are exactly the segments that span the
+      positive $x$-axis (or any arbitrary radial line). To do this, we can scan $S$ and find the segments that intersect the positive $x$-axis, which
+      only takes linear time.
+
       We have the following pseudocode:
 
       \begin{algorithmic}[1]
 
         \Function{VisibleSegments}{$S,p$}
 
-        \State $T \gets \emptyset$
-        \State $V \gets \emptyset$
         \State Shift coordinates so $p$ is at the origin
+        \State $T \gets \texttt{IntersectPositiveXAxis}(S)$
+        \State $V \gets \emptyset$
         \State $Q \gets \{ \text{ endpoints of segments in } S \}$ where endpoints are associated to the segments they are part of
-        \State $Q \gets \texttt{AngleSort}(Q)$ where ties are broken in favor of points closer to the origin (for handling degeneracies)
+        \State $Q \gets \texttt{AngleSort}(Q)$
         \For {$q \in Q$}
         \If { $q$ is a left endpoint }
         \State $T.Insert(q.interval)$
@@ -210,16 +216,28 @@
 
         \EndFunction
 
+        \Function{IntersectPositiveXAxis}{$S$}
+        \State $V \gets \emptyset$
+        \For {$s \in S$}
+        \If {$Intersect(s, ((0,0),(\infty,0))) = \texttt{True}$}
+        \State $V \gets V \cup \{s\}$
+        \EndIf
+        \EndFor
+        \EndFunction
+
+
       \end{algorithmic}
 
-      Shifting the coordinate system requires adding $-p$ to $p$ and the endpoints of all intervals in $S$, which can be done in $O(n)$ time. As was
+      Shifting the coordinate system requires adding $-p$ to $p$ and the endpoints of all intervals in $S$, which can be done in $O(n)$ time. Finding
+      the segments that intersect the positive $x$-axis is done in linear time. As was
       shown in Problem 1, the \texttt{AngleSort} takes $O( n \log n )$ time. Next, we loop over each interval endpoint and either add or remove the
       associated interval to the balanced tree. Each of these insertions and deletions can be done in $O(\log n)$ time. The loop therefore runs in
       $O(n \log n)$ time. Thus, the overall running time of this algorithm is $O(n \log n)$.
 
-      This algorithm needs to be modified to handle a few special cases at this point. First, this algorithm doesn't catch intervals that span the
-      positive $x$-axis (test positive $x$-axis for intersection with every interval when initializing $T$). There are also unhandled cases when two
-      endpoints (belonging to the same segment or different segments) have the same polar angle.
+      The algorithm above does not handle cases when two endpoints (belonging to the same segment or different segments) have the same polar angle. This can be
+      fixed by taking all of the points with the same polar angle, inserting all necessary segments, checking the closest segment to $p$, deleting all
+      necessary segments, and checking again for the closest segment to $p$. This can be accomplished by modifying \texttt{AngleSort} to indicate how
+      many points have the same polar angle with $p$. This handles the degenerate cases, but is not added to the pseudocode for the sake of clarity.
 
     \end{solution}
 \end{enumerate}
