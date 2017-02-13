@@ -11,3 +11,10 @@
 *.fdb_latexmk
 
 *.fls
+
+# ignore bibliography files
+*.bbl
+*.bcf
+*.blg
+
+*.run.xml
