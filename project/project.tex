@@ -54,6 +54,33 @@
 \begin{document}
 \maketitle
 
+\section{Introduction}
+
+The closest-neighbors Voronoi diagram for a set of points $S \subset \R^2$ partitions the plane into regions where each region has an associated $p \in S$ and
+is defined by
+\begin{equation*}
+  R_p = \{ q \in \R^2 | d(p,q) \leq d(p',q) \text{ for all } p' \in S \} .
+\end{equation*}
+
+There are several ways to generalize this concept to give other interesting partitions of the plane. Partitioning into regions defined by sharing the
+same $k$ closest points in $S$ gives rise to an order-$k$ Voronoi diagram \cite{aurenhammer_survey}. Another method for producing variations on
+Voronoi diagrams is to consider using weighted distance functions. Let $w: S \to \R^+$ be a function that defines the weight of points of $S$. The
+weighted Voronoi diagram partitions the plane into regions defined by
+\begin{equation*}
+  \tilde{R}_p = \{ q \in \R^2 | d(p,q) - w(p) \leq d(p',q) - w(p') \text{ for all } p' \in S \}.
+\end{equation*}
+It is worth noting that $p$ is not necessarily contained in $\tilde{R}_p$ in the weighted case. Unlike the straight-line boundaries of standard
+Voronoi diagrams, boundaries between regions in weighted Voronoi diagrams are hyperbolic in shape \cite{aurenhammer_additive}.
+
+A geometric object closely related to weighted Voronoi diagrams is the power diagram. Consider a Voronoi diagram where points in $S$ are replaced by
+circles with possibly distinct radii. Instead of measuring the distance from a point in the plane to the center of the spheres, measure the distance
+along lines tangent to the spheres to points in the plane. Using the Pythagorean Theorem, this is equivalent to measuring distances as $d^2(p,q) -
+r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r$. This leads to a partition of the plane into regions defined by
+\begin{equation*}
+  \overline{R}_p = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \}.
+\end{equation*}
+This is known as the power diagram of $S$.
+
 \printbibliography
 \end{document}
 
