@@ -70,7 +70,7 @@ weighted Voronoi diagram partitions the plane into regions defined by
   \tilde{R}_p = \{ q \in \R^2 | d(p,q) - w(p) \leq d(p',q) - w(p') \text{ for all } p' \in S \}.
 \end{equation*}
 It is worth noting that $p$ is not necessarily contained in $\tilde{R}_p$ in the weighted case. Unlike the straight-line boundaries of standard
-Voronoi diagrams, boundaries between regions in weighted Voronoi diagrams are hyperbolic in shape \cite{aurenhammer_additive}.
+Voronoi diagrams, boundaries between regions in weighted Voronoi diagrams are hyperbolic arcs or straight lines \cite{aurenhammer_additive}.
 
 A geometric object closely related to weighted Voronoi diagrams is the power diagram. Consider a Voronoi diagram where points in $S$ are replaced by
 circles with possibly distinct radii. Instead of measuring the distance from a point in the plane to the center of the spheres, measure the distance
@@ -80,6 +80,36 @@ r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r$. This leads to
   \overline{R}_p = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \}.
 \end{equation*}
 This is known as the power diagram of $S$.
+
+Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
+Power diagrams are known to have connections to arrangements of hyperplanes in $\R^3$ ($\R^{d+1}$ in general) \cite{aurenhammer_survey}. The notions
+of power diagrams and additively weighted Voronoi diagrams can be connected through embeddings of additively weighted Voronoi diagrams into
+higher-dimensional power diagrams \cite{aurenhammer_additive}. This same connection holds for other generalized Voronoi diagrams.
+
+\section{Applications of Power Diagrams}
+
+Power diagrams have found applications in many diverse fields. Some of these uses are straightforward applications to computer science problems. Other
+applications can be found in constrained clustering, manifold reconstruction, and materials science.
+
+Within computer science, power diagrams give useful algorithms for problems involving discs. One such problem is that of determining whether a point
+lies within the union of a set of discs. A problem that arises in computer graphics that power diagrams give a solution to is finding the boundary of
+the union of $n$ discs. \cite{imai_power} Another application of power diagrams is determining whether discs within a set of $n$ discs overlaps
+\cite{aurenhammer_discs}. Given the $O(n \log n)$ algorithm for computing power diagrams, these problems can all be solved in $O(n \log n)$ time.
+
+Power diagrams also find use in areas outside of algorithms. They can be used in clustering problems in which there are constraints on the way points
+can be clustered \cite{brieden_clustering}. One example of this type of problem would be when a small number of farmers own many small plots of land
+in the same area. To reduce operating costs, these farmers may agree to reallocate their lots in such a way that their lots are closer together. In
+this reallocation process, the farmers are constrained because they need to group plots in such a way that each farmer gets roughly the same acreage
+as before the reallocation \cite{brieden_farmland}.
+
+Power diagrams can also be used in manifold reconstruction. This problem takes a sampling of points from a smooth manifold in a higher-dimensional
+ambient space. The goal is to give a piecewise linear approximation of the surface of the original manifold. \textbf{I'M NOT SURE HOW POWER DIAGRAMS
+ARE BEING USED HERE}.
+
+Power diagrams have also found use in some numerical methods for fluid equations. In simulations of multiple fluids using finite volume methods, cells
+may end up containing multiple substances. After materials are located within a cell, power diagrams can be used to give an approximation to the
+interface between the substances. This interface approximation allows the materials to be advected properly, leading to more accurate simulations
+\cite{fluids}.
 
 \printbibliography
 \end{document}
