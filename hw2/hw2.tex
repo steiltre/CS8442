@@ -68,6 +68,13 @@
     \begin{solution}
       \begin{enumerate}
         \item
+          We have the existence of a triangulation by noting that the discussion of splitting a polygon into $y$-monotone pieces holds whether $P$ has
+          holes or not. Merge and split vertices are defined locally, so the definition holds for vertices on the boundary of $P$ as well as holes
+          inside of $P$.
+
+          The same algorithm as in the case without holes can be used to remove merge and split vertices by adding valid diagonals. As before, this means the original polygon
+          has been split into $y$-monotone pieces. Each of these $y$-monotone pieces cannot contain a hole because this would create a $y$-value where
+          a horizontal line would intersect in more than a single segment. Once we have the $y$-monotone pieces, we can triangulate in the same way.
 
         \item
       \end{enumerate}
