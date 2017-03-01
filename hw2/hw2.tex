@@ -77,6 +77,41 @@
           a horizontal line would intersect in more than a single segment. Once we have the $y$-monotone pieces, we can triangulate in the same way.
 
         \item
+          Consider a fully triangulated polygon with $h$ holes and $n$ vertices. Each face is one of the following: a triangle, a hole, or the
+          exterior of the polygon. Therefore, there are $t + h + 1$ faces, where $t$ is the number of triangles in the triangulation. A simple polygon
+          has the same number of edges as vertices as edges. Our original polygon is composed of simple polygons, so the number of edges bounding the
+          exterior of the polygon and the interior of the holes is $n$. In the triangulated polygon, every edge is a diagonal or an edge in the
+          original polygon. Therefore, we have $n + d$ egdes, where $d$ is the number of diagonals in the triangulation.
+
+          Substituting these values into Euler's formula, we get
+          \begin{align*}
+            2 &= \# \text{faces} - \# \text{edges} + \# \text{vertices} \\
+            &= (t + h + 1) - (n + d) + n \\
+            &= t + h - d + 1
+          \end{align*}
+          This simplifies to
+          \begin{equation}\label{eq:Euler_app}
+            t + h - d = 1
+          \end{equation}
+
+          Now, consider walking around the edges of each triangle in the triangulation. Each triangle has 3 edges. Looking at the edges that are
+          traversed in this way, we walk along each diagonal exactly twice and each edge of $P$ exactly once. This gives
+          \[ 3t = 2d + n .\]
+
+          Multiplying \eqref{eq:Euler_app} by 3 and inserting this relation, we have
+          \begin{align*}
+            3 &= 3t + 3h - 3d \\
+            &= 3h + n - d
+          \end{align*}
+          This simplifies to $d = n - 3 + 3h$.
+
+          Multiplying \eqref{eq:Euler_app} by 2 and again using the relation, we have
+          \begin{align*}
+            2 &= 2t + 2h - 2d \\
+            &= 2t + 2h  - (3t - n) \\
+            &= -t + 2h + n
+          \end{align*}
+          This simplifies to $t = n - 2 + 2h$.
       \end{enumerate}
     \end{solution}
 
@@ -101,10 +136,27 @@
     \begin{solution}
       \begin{enumerate}
         \item
+          This query problem can be transformed into a query problem in 4-dimensions by recognizing we have 4 coordinates we are interested in for
+          each rectangle in $S$: the $x$-coordinate of the left edge, the $x$-coordinate of the right edge, the $y$-coordinate of the bottom edge, and
+          the $y$-coordinate of the top edge. Using this we can encode each rectangle using the coordinates $(x_l, x_r, y_b, y_t)$, where the
+          coordinates are those listed previously.
+
+          For querying against these points in $\R^4$, we query using the $x$-interval of our query rectangle twice in a row (using the same values
+          each time), followed by two queries using the $y$-interval of our query rectangle. This query process returns a rectangle if and only if
+          both $x$-coordinates and both $y$-coordinates of the point in $\R^4$ lie within the query rectangle (with two copies of its query
+          intervals), that is, if and only if all edges are contained in the query rectangle.
+
+          By using a range tree, we get the desired $O(n \log^3 n)$ storage and $O( \log^4 n + k)$ query time.
 
         \item
+          This algorithm works the same way as that of part (a). Now we store each polygon in $P$ as $(x_l, x_r, y_b, y_t)$, where $x_l$ and $x_r$ are
+          the left- and right-most $x$-coordinates of the polygon, and $y_b$ and $y_t$ are the smallest and largest $y$-coordinates of points in the
+          polygon. By querying twice in each direction, we find all polygons in $P$ where all points have $x$- and $y$-coordinates in the ranges
+          defined by the query rectangle.
 
-        \item
+          By using a range tree, we get the desired $O(n \log^3 n)$ storage and $O( \log^4 n + k)$ query time.
+
+        \item Use fractional cascading on the $\R^2$ range trees constructed as part of the $\R^4$ range trees being used.
       \end{enumerate}
     \end{solution}
 
