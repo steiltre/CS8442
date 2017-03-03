@@ -179,11 +179,70 @@
     \begin{solution}
       \begin{enumerate}
         \item
+          Consider the set of points $P = \{(k,k) \ | \ k = 1,\dots,n\}$ and a sufficiently large query triangle bounded above by the edge given by the line $y = x -
+          \frac{1}{2}$. This triangle is going to intersect $O(n)$ regions in the associated kd-tree.
+
+          Consider any vertical splitter $l$ of the kd-tree. This line passes through some point $(k,k) \in P$. Consider any region with $l$ as its
+          left boundary. If this region has not bottom right corner, it is unbounded in the positive $x$ or negative $y$ direction (or both). Either way, it
+          will contain points with $y < x - \frac{1}{2}$ and will therefore intersect the query triangle. Now we must understand when this region has
+          a bottom-right corner.
+
+          The right edge of this region is a vertical line that passes through a point $(i,i)$ for some $i$. The bottom edge is a horizontal segment that
+          passes through a point $(j,j)$. Because this horizontal segment intersects the left and right boundaries, we have $k \leq j \leq i$. Also,
+          we claim $i \neq j$. As the kd-tree is constructed, regions are split by choosing vertical and horizontal segments that pass through medians
+          of points ordered in the $x$- or $y$-directions. After a splitting, the median value will be to the right of or above all points it is
+          compared against for future splittings because all points lie on the line $y=x$. This means the same point will not be chosen as another
+          median. Therefore, $k < j < i$.
+
+          Because $j < i$, the lower-right corner of the region being considered is at $(i,j)$ with $j \leq i-1$. Therefore, $(i,j)$ is in the query
+          rectangle. Therefore, every region with a left edge intersects the query triangle. Similarly, we can argue any region with a right edge
+          intersects the query triangle. It is obvious that every region with no left or right edges must intersect the query triangle. Thus, every
+          region in the kd-tree intersects the query triangle.
+
+          Because every region of the kd-tree intersects the query triangle, every leaf of the tree will be explicitly checked for containment, giving
+          $O(n)$ as the lower bound for querying. In this example, it is easy to see no points of $P$ were actually contained in the query rectangle.
 
         \item
+          To construct the data structure, we perform the same basic steps as for a kd-tree except splitters will rotate between vertical lines,
+          horizontal lines, lines with slope 1, and lines with slope -1. To do the splitting with the oblique lines, you can consider rotating the
+          plane 45 degrees counterclockwise and performing vertical and horizontal splittings in these rotated coordinates.
+
+          To query the structure, the same \texttt{SearchKDTree} algorithm can be used. This algorithm descends from the root, searching branches that
+          correspond to regions the query triangle intersects with. When a region of any node in the tree is completely contained in the query
+          triangle, the entire subtree is reported.
+
+          As before, each point is contained in a single leaf node. The total number of nodes in the tree is $2n-1$, so the storage cost is $O(n)$.
+
+          The query time can be established in the same way as for a kd-tree. The main difference is that we no longer need to descend two levels in
+          the tree to establish the recursion, but must descend four levels.
+
+          First, we see that the time required to traverse the subtrees which are reported is $O(k)$. The other contribution to the query time is the
+          number of nodes that must be visited but are not in a reported subtree. Consider an infinite vertical line $l$. Let $Q(n)$ be the number of
+          regions in our modified kd-tree storing $n$ points with a vertical splitter at the root that $l$ intersects.
+
+          At the root of this tree, $l$ intersects the region (i.e. $\R^2$). Descending one level, $l$ intersects exactly one of the two regions split
+          by a vertical line. At the next level, $l$ intersects all regions that are children of intersected regions above because the regions are
+          split by a horizontal line. Descending one more level, there are four children that $l$ can possibly intersect. Given the regions are split
+          by an oblique line at this level, there can be between two and four intersections. At the next level, we have nodes with vertical splitters
+          again. We again are splitting with an oblique line, which we cannot say for certain reduces the number of regions we must consider.
+          Therefore, we have to consider up to eight of the total sixteen nodes at this level because the original vertical split was the only one
+          that definitely removed nodes from consideration.
+
+          By descending four levels as above, $l$ has intersected at most eight regions. The nodes at the next level with vertical splitters are roots
+          of trees that contain $n/16$ points (from descending four levels, halving the number of points each time). This gives the recursion
+          \[ Q(n) \leq
+            \begin{cases}
+              O(1) &\text{if } n = 1 \\
+              O(1) + 8 Q \left( \frac{n}{16} \right) &\text{if } n > 1
+            \end{cases}
+          \]
+
+          Applying the Master Theorem to this recursion, we get $Q(n) = O(n^{3/4})$. By the same argument, we can bound the number of regions
+          intersected by horizontal and oblique query lines. Therefore, the total query time is $O(n^{3/4} + k)$.
+
       \end{enumerate}
     \end{solution}
-\end{enumerate}<++>
+\end{enumerate}
 \end{document}
 
 
