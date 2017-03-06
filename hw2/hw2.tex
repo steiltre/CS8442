@@ -79,7 +79,7 @@
         \item
           Consider a fully triangulated polygon with $h$ holes and $n$ vertices. Each face is one of the following: a triangle, a hole, or the
           exterior of the polygon. Therefore, there are $t + h + 1$ faces, where $t$ is the number of triangles in the triangulation. A simple polygon
-          has the same number of edges as vertices as edges. Our original polygon is composed of simple polygons, so the number of edges bounding the
+          has the same number of edges as vertices. Our original polygon is composed of simple polygons, so the number of edges bounding the
           exterior of the polygon and the interior of the holes is $n$. In the triangulated polygon, every edge is a diagonal or an edge in the
           original polygon. Therefore, we have $n + d$ egdes, where $d$ is the number of diagonals in the triangulation.
 
@@ -183,14 +183,14 @@
           \frac{1}{2}$. This triangle is going to intersect $O(n)$ regions in the associated kd-tree.
 
           Consider any vertical splitter $l$ of the kd-tree. This line passes through some point $(k,k) \in P$. Consider any region with $l$ as its
-          left boundary. If this region has not bottom right corner, it is unbounded in the positive $x$ or negative $y$ direction (or both). Either way, it
+          left boundary. If this region has no bottom right corner, it is unbounded in the positive $x$ or negative $y$ direction (or both). Either way, it
           will contain points with $y < x - \frac{1}{2}$ and will therefore intersect the query triangle. Now we must understand when this region has
           a bottom-right corner.
 
           The right edge of this region is a vertical line that passes through a point $(i,i)$ for some $i$. The bottom edge is a horizontal segment that
           passes through a point $(j,j)$. Because this horizontal segment intersects the left and right boundaries, we have $k \leq j \leq i$. Also,
           we claim $i \neq j$. As the kd-tree is constructed, regions are split by choosing vertical and horizontal segments that pass through medians
-          of points ordered in the $x$- or $y$-directions. After a splitting, the median value will be to the right of or above all points it is
+          of points ordered in the $x$- or $y$-directions. After a splitting, the previously chosen median value will be to the right of or above all points it is
           compared against for future splittings because all points lie on the line $y=x$. This means the same point will not be chosen as another
           median. Therefore, $k < j < i$.
 
@@ -204,7 +204,7 @@
 
         \item
           To construct the data structure, we perform the same basic steps as for a kd-tree except splitters will rotate between vertical lines,
-          horizontal lines, lines with slope 1, and lines with slope -1. To do the splitting with the oblique lines, you can consider rotating the
+          horizontal lines, lines with slope 1, and lines with slope -1. To do the splitting with oblique lines, you can consider rotating the
           plane 45 degrees counterclockwise and performing vertical and horizontal splittings in these rotated coordinates.
 
           To query the structure, the same \texttt{SearchKDTree} algorithm can be used. This algorithm descends from the root, searching branches that
