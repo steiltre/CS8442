@@ -1,0 +1,122 @@
+%        File: hw3.tex
+%     Created: Fri Mar 10 01:00 PM 2017 C
+% Last Change: Fri Mar 10 01:00 PM 2017 C
+%
+
+\documentclass[11pt]{article}
+
+\title{CSci 8442 Homework 3}
+\date{3/27/17}
+\author{Trevor Steil}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{esint}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{bbm}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{claim}{Claim}
+%\newtheorem*{problem}{Problem}
+%\newtheorem*{lemma}{Lemma}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\supp}[1]{\mathop{\mathrm{supp}}\left(#1\right)}
+\newcommand{\lip}[1]{\mathop{\mathrm{Lip}}\left(#1\right)}
+\newcommand{\curl}{\mathrm{curl}}
+\newcommand{\la}{\left \langle}
+\newcommand{\ra}{\right \rangle}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\div}{\mathrm{div}}
+
+\newenvironment{problem}{\textbf{Problem.}}
+
+\newenvironment{solution}[1][]{\emph{Solution #1}}
+
+\algnewcommand{\Or}{\textbf{ or }}
+\algnewcommand{\And}{\textbf{ or }}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+  \item 10.8 pg. 420
+
+    \begin{problem}
+        Segment trees can be used for multi-level data structures.
+        \begin{enumerate}
+          \item Let $R$ be a set of $n$ axis-parallel rectangles in the plane. Design a data structure for $R$ such that the rectangles containing a query
+            point $q$ can be reported efficiently. Analyze the amount of storage and the query time of your data structure. \textit{Hint:} Use a segment
+            tree on the $x$-intervals of the rectangles, and store canonical subsets of the nodes in this segment tree in an appropriate associated
+            structure.
+
+          \item Generalize this data structure to $dd$-dimensional space. Here we are given a set of axis-parallel hyperrectangles -- that is, polytopes
+            of the form $[x_1 : x_1'] \times [x_2 : x_2' \time \dots \time [x_d : x_d']$ -- and we want to report the hyperrectangles containing a query
+            point. Analyze the amount of storage and the query time of your data structure.
+        \end{enumerate}
+
+        A carefule description of the data structure, in words, suffices; pseudocode is not needed. (If it helps, augment your discussion with
+        appropriate figures.) Be sure to justify the correctness of your method and to analyze its performance (space and query time).
+    \end{problem}
+
+    \begin{solution}
+      \begin{enumerate}
+        \item
+
+        \item
+      \end{enumerate}
+    \end{solution}
+
+  \item
+    \begin{problem}
+
+      Let $S$ be set of $n$ points in the plane. In class we discussed how to preprocess $S$ in $O(n \log n)$ time into a layered (i.e.,
+      fractional-cascaded) 2D range tree of size $O(n \log n)$ so that the $k$ points that are contained in a query rectangle $q = [x_1, x_x] \times
+      [y_1, y_2]$ can be reported in $O(\log n + k)$ time.
+
+      It is possible to achieve the same bounds using a (relatively) sipler data structure: a 1D range tree where each node stores a suitable
+      associated structure (different from a 1D range tree). Describe how to build and query the overall data structure and analyze its performance
+      (space and query time). You may describe the construction and query algorithms in words, but please be clear and precise. (Again, augment your
+      discussion with appropriate figures if needed.)
+
+    \end{problem}
+
+    \begin{solution}
+
+    \end{solution}
+
+  \item
+    \begin{problem}
+      This question pertains to the paper \textit{``Compuataional Geometry: Generalized (or colored) intersection searching''}, by P. Gupta, S. Rahul,
+      M. Smid, and R. Janardan, which can be downloaded from the class web page. The paper is a recent survey of a general class of query-retrieval
+      problems that has attracted widespread interest in recent years.
+
+      The paper describes several techniques that have been designed over the years to address such problems. Please read the paper carefully and
+      describe any two of the methods in detail. \textit{ You answer should be in your own words and should show that you have really understood the
+      methods; do not just recite from the paper.} You are welcom to refer to any of the papers cited in the survey, if needed.
+
+      P.S. You may find it fun to think on your own of other new problems that can be formulated in this setting.
+    \end{problem}
+
+    \begin{solution}
+
+    \end{solution}
+\end{enumerate}
+
+\end{document}
+
+
