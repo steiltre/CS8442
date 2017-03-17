@@ -3,7 +3,7 @@
 % Last Change: Fri Mar 10 01:00 PM 2017 C
 %
 
-\documentclass[11pt]{article}
+\documentclass[12pt,a4paper]{article}
 
 \title{CSci 8442 Homework 3}
 \date{3/27/17}
@@ -64,20 +64,72 @@
             tree on the $x$-intervals of the rectangles, and store canonical subsets of the nodes in this segment tree in an appropriate associated
             structure.
 
-          \item Generalize this data structure to $dd$-dimensional space. Here we are given a set of axis-parallel hyperrectangles -- that is, polytopes
+          \item Generalize this data structure to $d$-dimensional space. Here we are given a set of axis-parallel hyperrectangles -- that is, polytopes
             of the form $[x_1 : x_1'] \times [x_2 : x_2' \time \dots \time [x_d : x_d']$ -- and we want to report the hyperrectangles containing a query
             point. Analyze the amount of storage and the query time of your data structure.
         \end{enumerate}
 
-        A carefule description of the data structure, in words, suffices; pseudocode is not needed. (If it helps, augment your discussion with
+        A careful description of the data structure, in words, suffices; pseudocode is not needed. (If it helps, augment your discussion with
         appropriate figures.) Be sure to justify the correctness of your method and to analyze its performance (space and query time).
     \end{problem}
 
     \begin{solution}
       \begin{enumerate}
         \item
+          We can use the 2D Range Tree as a model to construct a 2D segment tree. Let $R = \{R_1, \dots, R_n\}$ be the set of $n$ axis-parallel
+          rectangles. For rectangle $R_i = [x_i, x_i'] \times [y_i, y_i']$, let $R_{i,x} = [x_i, x_i']$ and $R_{i,y} = [y_i, y_i']$, that is, $R_{i,x}$
+          and $R_{i,y}$ are the $x$- and $y$-intervals defining $R_i$.
+
+          We begin by constructing a segment tree on the $x$-intervals that
+          define the rectangles in $R$. In creating such a segment tree, the canonical subset of a node $v$ contains a list of intervals, $R_{i_1,x},
+          \dots, R_{i_k,x}$. Each of these $x$-intervals belongs to a rectangle that also has a $y$-interval. Instead of storing these $x$-intervals
+          in a list, we store the associated rectangles in a standard 1D segment tree according to $y$-intervals.
+
+          Construction of the 2D segment tree occurs similarly to the 1D case. All $x$-interval endpoints are sorted to determine the elementary
+          intervals. The elementary intervals are used to construct the balanced binary tree that gives the skeleton. Then the algorithm
+          \texttt{InsertSegmentTree} given in the book can be used to determine which node to place $R_{i,x}$ at for every rectangle $R_i$. As the
+          $x$-intervals are placed in this outer tree, we cannot begin creating the associated segment trees on $y$-intervals. This is because each
+          node needs to have all of the $y$-intervals it needs to store before it can determine the elementary intervals in the $y$-direction. After
+          all rectangles have been placed at the appropriate nodes in the $x$ segment tree, the $y$ segment tree can be constructed at each node.
+
+          Let the query point $q = (q_x, q_y)$. To query our 2D segment tree, we need to slightly modify the query algorithm for a 1D segment tree. We
+          begin by querying the segment tree built on $x$-intervals with the value $q_x$. At each node we visit, we no longer report every rectangle.
+          Instead, we perform a query on the associated segment tree built on $y$-intervals with the value $q_y$. During this second query, rectangles
+          are reported as nodes are visited. This query uses two queries of 1D segment trees to determine rectangles with correct $x$-ranges and
+          $y$-ranges. Therefore, the correctness follows from the correctness of the 1D segment tree query algorithm.
+
+          This query algorithm walks down the $x$-interval segment tree and does a query on the associated $y$-interval segment tree at each node.
+          Each of the $y$-interval queries is known to take $O(\log n)$ time (excluding reporting intervals). These queries are performed at each of the $\log n$ steps to reach the
+          bottom of the $x$-interval segment tree, giving a total query time of $O(\log^2 n + k)$, where $k$ is the number of rectangles to report.
+
+          To determine the storage requirements, consider a single level of the $x$-interval tree. Let $l$ be the number of nodes at this level with
+          $n_1, \dots, n_l$ giving the number of rectangles stored at each of the $l$ nodes. From the discussion of 1D segment trees, we know
+          any rectangle can be stored in at most 2 nodes at the given level. Therefore,
+          \[ \sum_{i=1}^l n_i \leq 2n .\]
+          At each of the $l$ nodes, rectangles are stored in an associated segment tree built on $y$-intervals. A 1D segment tree for $m$ intervals is
+          known to require $O(m \log m)$ storage. Therefore, if we consider $S_{level}(n)$, the total storage required of the $l$ nodes at the given level of our
+          segment tree built on $x$-intervals, we have
+          \begin{align*}
+            S_{level}(n) &\leq \sum_{i=1}^l C n_i \log n_i \quad \parbox{4cm}{for some constant $C$} \\
+            &\leq C \log n \sum_{i=1}^l n_i \\
+            &\leq 2C n \log n \\
+            &= O(n \log n)
+          \end{align*}
+
+          So at each of the $\log n$ levels of the segment tree for $x$-intervals, a total of $O(n \log n)$ storage is required. Thus, we get a total
+          storage requirement of $O(n \log n)$.
 
         \item
+          This data structure can be defined inductively using the 2D segment tree given from part (a). To define a $d$-dimensional segment tree,
+          create a segment tree on the first coordinate that stores a $(d-1)$-dimensional segment tree as the associated structure at every node.
+
+          The arguments for query time and storage given in part (a) only relied on the query time and storage for a 1D segment tree. This argument
+          inductively shows the query time of $O( \log^{d-1}n + k)$ and storage of $O(n \log^{d-1} n )$, where $k$ is the number of hyperrectangles to
+          report.
+
+          Given the similarities to range trees, there may be some way of using fractional cascading to reduce the query time. The same layering
+          technique for range trees cannot be immediately applied because these segment trees are constructed to explicitly break the nesting of
+          items in associated structures of children that was used previously.
       \end{enumerate}
     \end{solution}
 
@@ -88,7 +140,7 @@
       fractional-cascaded) 2D range tree of size $O(n \log n)$ so that the $k$ points that are contained in a query rectangle $q = [x_1, x_x] \times
       [y_1, y_2]$ can be reported in $O(\log n + k)$ time.
 
-      It is possible to achieve the same bounds using a (relatively) sipler data structure: a 1D range tree where each node stores a suitable
+      It is possible to achieve the same bounds using a (relatively) simpler data structure: a 1D range tree where each node stores a suitable
       associated structure (different from a 1D range tree). Describe how to build and query the overall data structure and analyze its performance
       (space and query time). You may describe the construction and query algorithms in words, but please be clear and precise. (Again, augment your
       discussion with appropriate figures if needed.)
@@ -107,12 +159,66 @@
 
       The paper describes several techniques that have been designed over the years to address such problems. Please read the paper carefully and
       describe any two of the methods in detail. \textit{ You answer should be in your own words and should show that you have really understood the
-      methods; do not just recite from the paper.} You are welcom to refer to any of the papers cited in the survey, if needed.
+      methods; do not just recite from the paper.} You are welcome to refer to any of the papers cited in the survey, if needed.
 
       P.S. You may find it fun to think on your own of other new problems that can be formulated in this setting.
     \end{problem}
 
     \begin{solution}
+      \begin{enumerate}
+
+        \item A General Approach for Reporting Problems
+
+          For this technique, we assume that we have a way of deciding whether the query object $q$ intersects subsets of $S$, the set of colored
+          objects. Colors are stored in the leaves of a balanced binary tree $CT$. At each node $v$ of $CT$, we have an associated data structure
+          $DEC(v)$ that returns ``true'' if $q$ intersects any object in $S$ of any color contained in $v$'s subtree and returns ``false'' otherwise.
+
+          To answer the generalized reporting problem, we start at the root of $CT$ and query $DEC(root)$ with $q$. If the result is ``true'', we
+          continue searching $root$'s children. When a result of ``false'' is obtained, the query stops searching that branch of $CT$. If the queries
+          reach a leaf of $CT$ and return ``true'', the color stored at that leaf is returned. Clearly, if the query returns a color, an object in $S$ of
+          that color intersects $q$. If an object in $S$ of a certain color $c$ intersects $q$, then each node on the path from the root to the leaf
+          storing $c$ has $c$ in its subtree, so each query of $DEC(v)$ on the path will return ``true'', and $c$ will be output. Thus this querying
+          process returns the correct colors.
+
+          To prove the result of the theorem, assume that the $n$ objects in $S$ can be stored with $M(n)$ space such that it takes time $f(n)$
+          to decide if a query object intersects the set of $n$ objects. We also assume $M(n)/n$ and $f(n)$ are nondecreasing in $n$. These last two
+          assumptions are the reasonable statements that the storage is increasing at least linearly in $n$ and the query time is longer for larger
+          sets of objects.
+
+          Consider a given level of $CT$. Assume it has nodes $v_1, \dots, v_k$. Let $S(v_j)$ be the set of objects of any of the colors stored in
+          $v_j$'s subtree. Then the total storage required at this level is
+          \begin{align*}
+            \sum_{j=1}^k M(|S(v_j)|) &= \sum_{j=1}^k \frac{M(|S(v_j)|)}{|S(v_j)|} |S(v_j)| \\
+            &\leq \frac{M(n)}{n} \sum_{j=1}^k |S(v_j)| \quad \parbox{4cm}{because $M(n)/n$ is nondecreasing} \\
+            &= M(n)
+          \end{align*}
+          Because $CT$ has $\log n$ levels, the total storage required is $O( \log n M(n))$.
+
+          Now we can look at the query time. Let $i$ be the number of colors returned by the query. If $i=0$, then $DEC(root)$ returns ``false'' and
+          requires $f(n)$ time. Assume $i \neq 0$. Each path to a reported color stored in a leaf has length $O(\log n)$ and visits at most 2 nodes at
+          each level of $CT$. Therefore, the total number of nodes visited is $O(i \log n)$. This gives a total query time of $O(f(n) + i \log n
+          f(n))$.
+
+          This general method gives a way of solving many generalized intersection problems. The standard counting and reporting problems for orthogonal range
+          search, segment intersection search, and interval stabbing have solutions that can be easily modified to solve the decision problem,
+          allowing the above result to solve the associated generalized intersection problems.
+
+        \item A Transformation-Based Approach
+
+          The idea for transformation-based approaches is to take a generalized intersection problem and modify it so that the solution can be found
+          using a standard counting or reporting algorithm. The example given in the article takes a generalized 1D range searching problem and
+          changes it into a 2D range searching problem. Then standard algorithms can be used to give the solution.
+
+          For the example, we take a set $S$ of $n$ colored points and a query interval $q = [l,r]$. For each color, sort the points of
+          that color in increasing order. For a point $p$, define the predecessor of $p$, $pred(p)$, to be the previous point in
+          this sorted order with the same color as $p$. The first point of each color is defined to have a predecessor of $-\infty$. The
+          tranformation then takes
+          \[ p \mapsto p' = (p, pred(p)) .\]
+          For querying, we now use the rectangle $q' = [l,r] \times (-\infty,l)$. A point $p' = (p, pred(p))$ is in this query rectangle if and only
+          if $p$ is in the interval $[l,r]$ and the predecessor of $p$ is to the left of the interval $[l,r]$. Therefore, this query returns at most
+          one point of any color, so the generalized reporting problem can be answered by returning the associated colors of these points.
+
+      \end{enumerate}
 
     \end{solution}
 \end{enumerate}
