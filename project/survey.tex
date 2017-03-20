@@ -1,0 +1,245 @@
+%        File: survey.tex
+%     Created: Thu Mar 16 10:00 PM 2017 C
+% Last Change: Thu Mar 16 10:00 PM 2017 C
+%
+
+\documentclass[12pt]{article}
+
+\title{Power Diagrams and Additively Weighted Voronoi Diagrams }
+\date{4/24/17}
+\author{Trevor Steil}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[backend=biber,style=numeric,citestyle=numeric,style=numeric]{biblatex}
+\usepackage{esint}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{bbm}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{claim}{Claim}
+%\newtheorem*{problem}{Problem}
+%\newtheorem*{lemma}{Lemma}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\supp}[1]{\mathop{\mathrm{supp}}\left(#1\right)}
+\newcommand{\lip}[1]{\mathop{\mathrm{Lip}}\left(#1\right)}
+\newcommand{\curl}{\mathrm{curl}}
+\newcommand{\la}{\left \langle}
+\newcommand{\ra}{\right \rangle}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\div}{\mathrm{div}}
+
+\newenvironment{problem}{\textbf{Problem.}}
+
+\newenvironment{solution}[1][]{\emph{Solution #1}}
+
+\algnewcommand{\Or}{\textbf{ or }}
+\algnewcommand{\And}{\textbf{ or }}
+
+\addbibresource{project.bib}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Voronoi diagrams provide a partitioning of space into regions where each region is defined by a \textit{site}. For a given site, its corresponding
+region is defined as containing all points closer to that site than any other site. Voronoi diagrams have been studied as mathematical objects and as
+computational tools providing solutions to many applied problems. Many generalizations and variations of Voronoi diagrams have also been studied in
+similar ways.
+
+\subsection{Definitions}
+
+The closest-neighbors Voronoi diagram for a set of $n$ sites $S \subset \R^2$ partitions the plane into regions where each region is associated to a
+site $p \in S$ and is defined by
+\begin{equation*}
+  reg(p) = \{ q \in \R^2 | d(p,q) \leq d(p',q) \text{ for all } p' \in S \} .
+\end{equation*}
+where $d(p,q)$ is the Euclidean distance between $p$ and $q$.
+
+There are several ways to generalize this concept to give other interesting partitions of the plane. Partitioning into regions defined by sharing the
+same $k$ closest sites in $S$ gives rise to an order-$k$ Voronoi diagram \cite{aurenhammer_survey}. When $k=n-1$, this gives the furthest-neighbor
+Voronoi diagram.
+
+Many other variations of Voronoi diagrams can be constructed through the use of weighted distance functions. Let $w: S \to \R^+$ be a function that defines
+the weight of sites in $S$. The multiplicatively weighted Voronoi diagram partitions the plane into regions defined by
+\begin{equation*}
+  reg_{mul}(p) = \left\{ q \in \R^2 | \frac{d(p,q)}{w(p)} \leq \frac{d(p',q)}{w(p')} \text{ for all } p' \in S \right\}.
+\end{equation*}
+The boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}.
+
+The additively weighted Voronoi diagram partitions the plane into regions defined by
+\begin{equation*}
+  reg_{add}(p) = \left\{ q \in \R^2 | d(p,q) + w(p) \leq d(p',q) + w(p') \text{ for all } p' \in S \right\}.
+\end{equation*}
+This definition also has a geometric interpretation. For a site $p \in S$, let $\mathcal{D}_p$ be the disc of radius $w(p)$ centered at $p$. Then we
+can define
+\begin{equation*}
+  reg_{add}(p) = \left\{ q \in \R^2 | \max_{\tilde{p} \in \mathcal{D}_p} d(\tilde{p}, q) \leq \max_{\tilde{p}' \in \mathcal{D}_{p'}} d(\tilde{p}', q) \text{
+  for all } p' \in S \right\},
+\end{equation*}
+that is, we can measure distances as the maximum distance to any point in the disc centered at a given site \cite{rosenberger_additive}.
+
+It is worth noting that $p$ is not necessarily contained in $\tilde{R}_p$ in the additively weighted case. Unlike the straight-line boundaries of standard
+Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments \cite{aurenhammer_additive}.
+
+A geometric object defined similarly to weighted Voronoi diagrams is the power diagram. Consider a Voronoi diagram where sites in $S$ are replaced by
+circles with possibly distinct radii. Instead of measuring the distance from a point in the plane to the center of the circles, we measure the distance
+along lines tangent to the circles. Using the Pythagorean Theorem, this is equivalent to measuring distances as $d^2(p,q) -
+r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r(p)$ \cite{aurenhammer_power}. This leads to a partition of the plane into regions defined by
+\begin{equation*}
+  reg_{pow}(p) = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \text{ for all } p' \in S \}.
+\end{equation*}
+This is known as the power diagram of $S$. The distance function used in power diagrams is called the \textit{power function} and is denoted
+$pow(q,p)$ where $q \in \R^2$ and $p \in \R^2$ is the center of a circle with radius $r(p)$.
+
+Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
+Power diagrams are known to have connections to arrangements of hyperplanes in $\R^3$ ($\R^{d+1}$ in general) \cite{aurenhammer_survey}. The notions
+of power diagrams and additively weighted Voronoi diagrams can be connected through embeddings of additively weighted Voronoi diagrams into
+higher-dimensional power diagrams \cite{aurenhammer_additive}. This same connection holds for other generalized Voronoi diagrams.
+
+In the remaining sections, additively weighted Voronoi diagrams and power diagrams will be the main consideration. We will use the term weighted
+Voronoi diagram to refer to additively weighted Voronoi diagrams. Also, the definitions given above naturally extend to higher dimensions. We will
+consider diagrams in $\R^2$, but many ideas and results will hold in higher dimensions as well.
+
+\section{Relationships to Other Geometric Structures}
+The various Voronoi diagrams defined above have many connections to other geometric structures. There is the obvious connection to Delaunay
+triangulations, the dual of Voronoi diagrams, which we will not discuss. Frequently, Voronoi diagrams in the plane can be related to 3-dimensional
+objects.
+
+\subsection{Cone Arrangements}
+\label{cone}
+For motivation, we will first consider a standard Voronoi diagram. Take a site $p \in S$. Define
+\[ C_p = \{ (x, y, d(p, (x,y)) \}. \]
+This defines a cone with vertex at $p$ in the $xy$-plane. We can see that $reg(p)$ is the region in $\R^2$ corresponding to the height of $C_p$ being
+less than the height of all other cones. If we look at the intersection of two cones for $p \neq p'$, we have
+\[ C_p \cap C_{p'} = \{ (x,y,z) | z = d(p, (x,y)) = d(p', (x,y)) \}. \]
+Projecting $C_p \cap C_{p'}$ into $\R^2$ gives the points in the plane that are equidistant to $p$ and $p'$. This projection therefore contains
+$reg(p) \cap reg(p')$ in the Voronoi diagram.
+
+A segment of this projection is not in $reg(p) \cap reg(p')$ if and only if the projected segment is contained in the interior of $reg(p'')$ for $p''
+\neq p, p'$. This corresponds to $C_{p''}$ having a lower height at $C_p \cap C_{p'}$.
+
+We can apply the same reasoning to weighted Voronoi diagrams, where we define
+\[ C_p = \{ (x, y, d(p, (x,y)) + w(p) \}. \]
+This now gives cones that are shifted vertically by $w(p)$ units. Now $reg_{add}(p)$ is given by the region where $C_p$ is lower than all other cones.
+We can also use this to find boundaries between regions in order-$k$ weighted Voronoi diagrams by not looking at intersections of cones where no other
+cone lies below the intersection, but by looking for intersections where $k-1$ other cones lie below the intersection \cite{rosenberger_additive}.
+
+The visualization as cones allows us to easily see that it is not necessarily the case that $p \in reg_{add}(p)$. If we shift a cone up far enough, it
+will lie completely above another cone, giving $p \notin reg_{add}(p)$. More specifically, if $w(p) > d(p,p')$ for some $p' \in S$, then $p \notin
+reg_{add}(p)$.
+
+\subsection{Weighted Voronoi Diagrams and Power Diagrams}
+
+Weighted Voronoi diagrams can be relateed to power diagrams through an embedding of weighted Voronoi diagrams in $\R^2$ into power diagrams in $\R^3$.
+This embedding process applies more generally and requires a few definitions.
+
+To begin with, we will state the result for general distance functions. Take $S \subset \R^2$ to be our sites. Any function $f: \R^2 \times S \to \R$
+can be considered as a distance function that allows us to measure the distance between points in the plane and any of the sites. Using this distance
+function, we can construct a Voronoi diagram, $V(S,f)$.
+
+Let $F: \R \to \R$ be a strictly increasing function. For $p,q \in S \subset \R^2$, we define
+\[ cone_F(p) = \{ (x,y,z) | (x,y) \in \R^2, z \ F( f( (x,y), p) ) \}. \]
+
+We call a diagram \textit{affinely transformable} if there is a function $F$ as above such that $cone_F(p) \cap cone_F(q)$ is contained in a plane in $\R^3$ for any distinct
+$p,q \in S$.
+
+Let $V$ be a Voronoi diagram in $\R^3$. We say the 2-dimensional Voronoi diagram $V(S,f)$ can be \textit{embedded} in $V$ if for some $F$ as above,
+there is a region $C$ of $V$ for each $p \in S$ such that $proj( C \cap cone_F(p)) = reg(p)$, where we have used $reg(p)$ to mean the region defined
+by the distance function $f$, not necessarily a region defined for a standard Voronoi diagram.
+
+We have the following relation between affinely transformable diagrams and power diagrams:
+
+\begin{theorem}
+  \label{thm:affine}
+  A Voronoi diagram $V(S,f)$ in $\R^2$ is affinely transformable if and only if it can be embedded into a power diagram in $\R^3$
+  \cite{aurenhammer_additive}.
+\end{theorem}
+
+As an example, all weighted Voronoi diagrams in $\R^2$ can be embedded in power diagrams in $\R^3$. We take $f(x,p) = d(x,p) + w(p)$ to be the
+distance function defining weighted Voronoi diagrams, and $F(x) = x$. In this case, $cone_F(p)$ is the cone described in Section \ref{cone} for $p \in
+S$. As already noted, the separators between regions in weighted Voronoi diagrams are hyperbolic arcs. The intersections $cone_F(p) \cap cone_F(q)$
+are these arcs (no longer being cut off when another cone is below the intersection \textbf{GET BETTER WAY OF DESCRIBING THIS}) projected back onto
+the cones, which will each be contained in a single plane in $\R^3$.
+
+By definition, we have that weighted Voronoi diagrams are affinely transformable by the above reasoning. By Theorem \ref{thm:affine}, weighted Voronoi
+diagrams can be embedded in power diagrams in $\R^3$. In fact, the corresponding power diagram is given by sites $T = \{ (p, w(p)) | p \in S \}$ and
+weights $\omega(p) = 2 w(p)^2$, where $S \subset \R^2$ and $w(p)$ are the sites and weights for the weighted Voronoi diagram. \textbf{CHECK IF THIS
+WEIGHT IS CORRECT}
+
+\subsection{Convex Hulls}
+
+There is an exact correspondence between power diagrams in $\R^2$ and convex hulls in $\R^3$. To show this, we will modify the argument in
+\cite{comp_geom} to hold for power diagrams rather than standard Voronoi diagrams by using tools from \cite{aurenhammer_power}. We wil first show the correspondence between power diagrams and
+upper envelopes and then use a correspondence between upper envelopes and lower convex hulls. As we will see later, this correspondence can be useful
+for algorithmically finding power diagrams \cite{aurenhammer_power}.
+
+First, we will need a few definitions. Let $U$ be the unit paraboloid in $\R^3$ defined as $z = x^2 + y^2$.
+
+Let $H$ be a finite set of nonvertical planes in $\R^3$. Considering the height of a plane as a function of coordinates in the plane, we denote points
+on the plane $h \in H$ as $(x,y,h(x,y))$. We define the \textit{upper envelope} of $H$ to be the object obtained by taking the plane with highest
+$z$-coordinate above every point in the plane, that is,
+\[ \mathcal{UE}(H) = \{ (x,y,z) | x,y \in \R, \ z = \max_{h \in H} h(x,y) \} .\]
+
+Consider a set of sites $P \subset \R^2$ with an associated radius $r(p)$ for $p \in P$. For $p \in P$, we define $h(p)$ to be the plane with height above a point
+$q \in \R^2$ given by
+\[ z = 2 p \cdot q - p^2 + r^2(p) ,\]
+where $p^2$ is used to denote $p \cdot p$.
+
+Now, we can begin to prove the correspondence between power diagrams and upper envelopes. First, we show the usefulness of the unit paraboloid $U$ in
+relation to the power function.
+
+\begin{lemma}
+  \label{lem:proj}
+  Let $q \in \R^2$ and $p \in P$. Let $q'$ be the vertical projection of $q$ onto $U$ and $q''$ be the vertical projection of $q$ onto $h(p)$. Then
+  $pow(q, p) = d(q, q') - d(q, q'')$.
+\end{lemma}
+\begin{proof}
+  See \cite{aurenhammer_power}
+\end{proof}
+
+Now we are able to prove the correspondence.
+
+\begin{theorem}
+  Let $H = \{ h(p) | p \in P \}$. Then the projection of $\mathcal{UE}(H)$ on the plane $z=0$ is the power diagram of $P$.
+\end{theorem}
+\begin{proof}
+  We must show $reg_{pow}(p)$ is exactly the projection of the facet $\mathcal{UE}(H)$ that is part of $h(p)$.
+
+  Take $q \in reg_{pow}(p)$. Then by assumption, $pow(q,p) \leq pow(q,\tilde{p})$ for all $\tilde{p} \in P$. To use Lemma \ref{lem:proj}, we let $q_p''$ be the
+  vertical projection of $q$ onto $h(p)$, and $q_{\tilde{p}}''$ be the vertical projection of $q$ onto $h(\tilde{p})$. We notice the vertical projection
+  of $q$ onto $U$ is independent of $p$ and $\tilde{p}$, so we leave this as $q'$. By Lemma \ref{lem:proj},
+  \begin{align*}
+    d(q,q') - d(q,q_p'') &= pow(q,p) \\
+    &\leq pow(q,\tilde{p}) \\
+    &= d(q,q') - d(q,q_{\tilde{p}}'')
+  \end{align*}
+  Therefore, $d(q,q_p'') \geq d(q, q_{\tilde{p}}'')$. Because the projections are vertical, $d(q,q_p'')$ and $d(q, q_{\tilde{p}}'')$ are the heights of
+  $h(p)$ and $h(\tilde{p})$ above the $q$. Thus, the height $h(p)$ is greater than or equal to the height of $h(\tilde{p})$ above $q$ for all
+  $\tilde{p} \in P$. This means $h(p)$ is in $\mathcal{UE}(H)$ above $q$, as we needed to show.
+\end{proof}
+
+This completes the correspondence between upper envelopes in $\R^3$ and power diagrams in $\R^2$. Using the duality of upper envelopes and lower convex hulls (see
+\cite{comp_geom}), we get the final correspondence between convex hulls in $\R^3$ and power diagrams in $\R^2$.
+
+\section{Algorithms}
+
+\printbibliography
+\end{document}
+
+
