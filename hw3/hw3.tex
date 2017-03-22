@@ -149,6 +149,30 @@
 
     \begin{solution}
 
+      The data structure we build has a range tree $T$ built on $x$-values. Associated to each node $v$ of $T$ will be a priority search tree,
+      $Assoc(v)$. $Assoc(v)$ will be built on all points contained in $v$'s subtree and will be made to answer grounded queries which are unbounded in
+      the $x$-direction. If $v$ is the left child of its parent, $Assoc(v)$  will be able to answer queries of the form $[x, \infty] \times
+      [y, y']$. If $v$ is the right child of its parent, $Assoc(v)$ will be able to answer queries of the form $[- \infty, x'] \times [y, y']$. We
+      define $Assoc(root)$ to be $nil$ as it will not be needed.
+
+      To query our data structure with the rectangle $[x,x'] \times [y, y']$, we begin in the standard way for range trees by searching for
+      $v_{split}$. At $v_{split}$, we know $x \leq x_{v_{split}} < x'$, where $x_v$ is the $x$-value stored at $v$. Therefore, all leaves in the
+      subtree of $lc(v_{split})$ store points $(\widetilde{x}, \widetilde{y})$ such that $\widetilde{x} \leq x_{v_{split}} < x'$. This means the only
+      condition we must satisfy when searching in the subtree of $lc({v_{split}})$ is $\widetilde{x} \geq x$. Therefore, by querying
+      $Assoc(lc({v_{split}}))$ with the rectangle $[x, \infty] \times [y, y']$, we return all
+      $(\widetilde{x}, \widetilde{y}) \in S$ contained in the rectangle $[x, x_{v_{split}}] \times [y, y']$. Similarly, we query $Assoc(rc({v_{split}}))$ with the rectangle
+      $[-\infty, x'] \times [y, y']$ to return all $(\widetilde{x}, \widetilde{y}) \in S$ contained in the rectangle $(x_{v_{split}}, x'] \times [y, y']$. Thus
+      the query returns all necessary points. The queries on priority search trees also don't return any extra values because of the conditions on
+      $x$-coordinates of points stored in $lc({v_{split}})$ and $rc({v_{split}})$.
+
+      At each node $v \in T$, a priority search tree is stored that is built on all points in the leaves of $v$'s subtree. At each level of $T$, each
+      leaf is in the subtree of exactly one node. Therefore, the total storage of all priority search trees stored at a given level is $O(n)$, by
+      using the known linear storage of priority search trees. $T$ has $\log n$ levels, giving a total storage of $O(n \log n)$.
+
+      In querying the data structure, we must first find $v_{split}$. This has been shown to take $O(\log n)$ time for range trees. At each of the
+      children of $v_{split}$ a priority search tree must be queried. The two priority search tree queries take time $O(\log n + k)$, giving a total
+      query time of $O(\log n + k)$.
+
     \end{solution}
 
   \item
