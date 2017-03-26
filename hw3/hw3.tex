@@ -19,6 +19,7 @@
 \usepackage{algpseudocode}
 \usepackage{bbm}
 \usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[section]
@@ -45,10 +46,16 @@
 
 \newenvironment{problem}{\textbf{Problem.}}
 
-\newenvironment{solution}[1][]{\emph{Solution #1}}
+\newenvironment{solution}[1][]{\vspace{.5cm}\textbf{\emph{Solution #1}}}
 
 \algnewcommand{\Or}{\textbf{ or }}
 \algnewcommand{\And}{\textbf{ or }}
+
+% Indent paragraphs and remove spacing between paragraphs in itemize and enumerate environments
+\setlist{
+  listparindent=\parindent,
+  parsep=0pt,
+}
 
 \begin{document}
 \maketitle
@@ -80,29 +87,30 @@
           rectangles. For rectangle $R_i = [x_i, x_i'] \times [y_i, y_i']$, let $R_{i,x} = [x_i, x_i']$ and $R_{i,y} = [y_i, y_i']$, that is, $R_{i,x}$
           and $R_{i,y}$ are the $x$- and $y$-intervals defining $R_i$.
 
-          We begin by constructing a segment tree on the $x$-intervals that
+          We visualize a segment tree $T$ built on the $x$-intervals that
           define the rectangles in $R$. In creating such a segment tree, the canonical subset of a node $v$ contains a list of intervals, $R_{i_1,x},
           \dots, R_{i_k,x}$. Each of these $x$-intervals belongs to a rectangle that also has a $y$-interval. Instead of storing these $x$-intervals
-          in a list, we store the associated rectangles in a standard 1D segment tree according to $y$-intervals.
+          in a list at a vertex $v$, we store the associated rectangles in a standard 1D segment tree, $Assoc(v)$, according to $y$-intervals. See Figure 1 for an illustration of
+          the structure.
 
           Construction of the 2D segment tree occurs similarly to the 1D case. All $x$-interval endpoints are sorted to determine the elementary
-          intervals. The elementary intervals are used to construct the balanced binary tree that gives the skeleton. Then the algorithm
+          intervals. The elementary intervals are used to construct the balanced binary tree $T$ that gives the skeleton. Then the algorithm
           \texttt{InsertSegmentTree} given in the book can be used to determine which node to place $R_{i,x}$ at for every rectangle $R_i$. As the
           $x$-intervals are placed in this outer tree, we cannot begin creating the associated segment trees on $y$-intervals. This is because each
-          node needs to have all of the $y$-intervals it needs to store before it can determine the elementary intervals in the $y$-direction. After
-          all rectangles have been placed at the appropriate nodes in the $x$ segment tree, the $y$ segment tree can be constructed at each node.
+          node requires all of the $y$-intervals it needs to store before it can determine the elementary intervals in the $y$-direction. After
+          all rectangles have been placed at the appropriate nodes in $T$, the associated $y$ segment tree can be constructed at each node.
 
-          Let the query point $q = (q_x, q_y)$. To query our 2D segment tree, we need to slightly modify the query algorithm for a 1D segment tree. We
-          begin by querying the segment tree built on $x$-intervals with the value $q_x$. At each node we visit, we no longer report every rectangle.
-          Instead, we perform a query on the associated segment tree built on $y$-intervals with the value $q_y$. During this second query, rectangles
+          Now we will describe querying this structure. Consider the query point $q = (q_x, q_y)$. To query our 2D segment tree, we need to slightly modify the query algorithm for a 1D segment tree. We
+          begin by querying the segment tree built on $x$-intervals with the value $q_x$. At each node $v$ we visit, we no longer report every rectangle.
+          Instead, we perform a query on the associated segment tree $Assoc(v)$ built on $y$-intervals with the value $q_y$. During this second query, rectangles
           are reported as nodes are visited. This query uses two queries of 1D segment trees to determine rectangles with correct $x$-ranges and
           $y$-ranges. Therefore, the correctness follows from the correctness of the 1D segment tree query algorithm.
 
-          This query algorithm walks down the $x$-interval segment tree and does a query on the associated $y$-interval segment tree at each node.
+          This query algorithm walks down the outer segment tree $T$ and does a query on $Assoc(v)$, the associated $y$-interval segment tree at each node.
           Each of the $y$-interval queries is known to take $O(\log n)$ time (excluding reporting intervals). These queries are performed at each of the $\log n$ steps to reach the
-          bottom of the $x$-interval segment tree, giving a total query time of $O(\log^2 n + k)$, where $k$ is the number of rectangles to report.
+          bottom of $T$, giving a total query time of $O(\log^2 n + k)$, where $k$ is the number of rectangles to report.
 
-          To determine the storage requirements, consider a single level of the $x$-interval tree. Let $l$ be the number of nodes at this level with
+          To determine the storage requirements, consider a single level of the outer tree $T$. Let $l$ be the number of nodes at this level with
           $n_1, \dots, n_l$ giving the number of rectangles stored at each of the $l$ nodes. From the discussion of 1D segment trees, we know
           any rectangle can be stored in at most 2 nodes at the given level. Therefore,
           \[ \sum_{i=1}^l n_i \leq 2n .\]
@@ -116,7 +124,7 @@
             &= O(n \log n)
           \end{align*}
 
-          So at each of the $\log n$ levels of the segment tree for $x$-intervals, a total of $O(n \log n)$ storage is required. Thus, we get a total
+          So at each of the $\log n$ levels of $T$, a total of $O(n \log n)$ storage is required. Thus, we get a total
           storage requirement of $O(n \log n)$.
 
         \item
@@ -150,20 +158,21 @@
     \begin{solution}
 
       The data structure we build has a range tree $T$ built on $x$-values. Associated to each node $v$ of $T$ will be a priority search tree,
-      $Assoc(v)$. $Assoc(v)$ will be built on all points contained in $v$'s subtree and will be made to answer grounded queries which are unbounded in
+      $Assoc(v)$. $Assoc(v)$ will be built on all points contained in leaves $v$'s subtree and will be made to answer grounded queries which are unbounded in
       the $x$-direction. If $v$ is the left child of its parent, $Assoc(v)$  will be able to answer queries of the form $[x, \infty] \times
       [y, y']$. If $v$ is the right child of its parent, $Assoc(v)$ will be able to answer queries of the form $[- \infty, x'] \times [y, y']$. We
       define $Assoc(root)$ to be $nil$ as it will not be needed.
 
       To query our data structure with the rectangle $[x,x'] \times [y, y']$, we begin in the standard way for range trees by searching for
-      $v_{split}$. At $v_{split}$, we know $x \leq x_{v_{split}} < x'$, where $x_v$ is the $x$-value stored at $v$. Therefore, all leaves in the
+      $v_{split}$. At $v_{split}$, we know $x \leq x_{v_{split}} < x'$, where $x_v$ is the $x$-value stored at $v$. We notice that all leaves in the
       subtree of $lc(v_{split})$ store points $(\widetilde{x}, \widetilde{y})$ such that $\widetilde{x} \leq x_{v_{split}} < x'$. This means the only
       condition we must satisfy when searching in the subtree of $lc({v_{split}})$ is $\widetilde{x} \geq x$. Therefore, by querying
       $Assoc(lc({v_{split}}))$ with the rectangle $[x, \infty] \times [y, y']$, we return all
       $(\widetilde{x}, \widetilde{y}) \in S$ contained in the rectangle $[x, x_{v_{split}}] \times [y, y']$. Similarly, we query $Assoc(rc({v_{split}}))$ with the rectangle
       $[-\infty, x'] \times [y, y']$ to return all $(\widetilde{x}, \widetilde{y}) \in S$ contained in the rectangle $(x_{v_{split}}, x'] \times [y, y']$. Thus
       the query returns all necessary points. The queries on priority search trees also don't return any extra values because of the conditions on
-      $x$-coordinates of points stored in $lc({v_{split}})$ and $rc({v_{split}})$.
+      $x$-coordinates of points stored in $lc({v_{split}})$ and $rc({v_{split}})$. In the above querying, if $v_{split}$ is a leaf, it will need to be
+      checked directly instead of trying to query the children that don't exist. Figure 2 gives a depiction of this query algorithm.
 
       At each node $v \in T$, a priority search tree is stored that is built on all points in the leaves of $v$'s subtree. At each level of $T$, each
       leaf is in the subtree of exactly one node. Therefore, the total storage of all priority search trees stored at a given level is $O(n)$, by
@@ -177,12 +186,12 @@
 
   \item
     \begin{problem}
-      This question pertains to the paper \textit{``Compuataional Geometry: Generalized (or colored) intersection searching''}, by P. Gupta, S. Rahul,
+      This question pertains to the paper \textit{``Computational Geometry: Generalized (or colored) intersection searching''}, by P. Gupta, S. Rahul,
       M. Smid, and R. Janardan, which can be downloaded from the class web page. The paper is a recent survey of a general class of query-retrieval
       problems that has attracted widespread interest in recent years.
 
       The paper describes several techniques that have been designed over the years to address such problems. Please read the paper carefully and
-      describe any two of the methods in detail. \textit{ You answer should be in your own words and should show that you have really understood the
+      describe any two of the methods in detail. \textit{ Your answer should be in your own words and should show that you have really understood the
       methods; do not just recite from the paper.} You are welcome to refer to any of the papers cited in the survey, if needed.
 
       P.S. You may find it fun to think on your own of other new problems that can be formulated in this setting.
@@ -193,7 +202,7 @@
 
         \item A General Approach for Reporting Problems
 
-          For this technique, we assume that we have a way of deciding whether the query object $q$ intersects subsets of $S$, the set of colored
+          For this technique, we assume that we have a way of deciding whether the query object $q$ intersects subsets of $S$, the set of $n$ colored
           objects. Colors are stored in the leaves of a balanced binary tree $CT$. At each node $v$ of $CT$, we have an associated data structure
           $DEC(v)$ that returns ``true'' if $q$ intersects any object in $S$ of any color contained in $v$'s subtree and returns ``false'' otherwise.
 
@@ -216,14 +225,16 @@
             &\leq \frac{M(n)}{n} \sum_{j=1}^k |S(v_j)| \quad \parbox{4cm}{because $M(n)/n$ is nondecreasing} \\
             &= M(n)
           \end{align*}
-          Because $CT$ has $\log n$ levels, the total storage required is $O( \log n M(n))$.
+          Because $CT$ has $\log n$ levels, the total storage required is $O( M(n) \log n )$.
 
           Now we can look at the query time. Let $i$ be the number of colors returned by the query. If $i=0$, then $DEC(root)$ returns ``false'' and
-          requires $f(n)$ time. Assume $i \neq 0$. Each path to a reported color stored in a leaf has length $O(\log n)$ and visits at most 2 nodes at
-          each level of $CT$. Therefore, the total number of nodes visited is $O(i \log n)$. This gives a total query time of $O(f(n) + i \log n
+          requires $f(n)$ time. Assume $i \neq 0$. Each path to a reported color stored in a leaf has length $O(\log n)$ and queries at most 2 nodes at
+          each level of $CT$ (i.e. the node on the path to the given leaf, and the sibling of the correct node). Therefore, the total number of nodes visited is $O(i \log n)$. This gives a total query time of $O(f(n) + i \log n
           f(n))$.
 
-          This general method gives a way of solving many generalized intersection problems. The standard counting and reporting problems for orthogonal range
+          From the above arguments, we are able to take a decision algorithm that requires $M(n)$ space and $f(n)$ running time, and give a reporting
+          algorithm that requires $O(\log n M(n))$ space and $O(f(n) + i \log n f(n)$ time. This general method gives a way of solving many
+          generalized intersection problems by simply storing the colors in their own tree and querying along subtrees of vertices. The standard counting and reporting problems for orthogonal range
           search, segment intersection search, and interval stabbing have solutions that can be easily modified to solve the decision problem,
           allowing the above result to solve the associated generalized intersection problems.
 
@@ -240,8 +251,21 @@
           \[ p \mapsto p' = (p, pred(p)) .\]
           For querying, we now use the rectangle $q' = [l,r] \times (-\infty,l)$. A point $p' = (p, pred(p))$ is in this query rectangle if and only
           if $p$ is in the interval $[l,r]$ and the predecessor of $p$ is to the left of the interval $[l,r]$. Therefore, this query returns at most
-          one point of any color, so the generalized reporting problem can be answered by returning the associated colors of these points.
+          one point of any color, so the generalized reporting problem can be answered by returning the associated colors of these points. This gives
+          a transformation from a 1D generalized intersection problem to a standard 2D grounded intersection problem, which can be solved using
+          priority search trees.
 
+          To solve the dynamic version of this problem. We use a priority search tree as before, but now for every color $c$, a balanced search tree
+          $T_c$ must be maintained as well. $T_c$ is used to efficiently determine how to set $pred(p)$ when inserting a new point $p$ of color $c$.
+
+          To answer the static counting problem, a slightly different approach is needed to be able to easily find the number of colors intersected. The transformed points are stored in a balanced search tree based on their $x$-coordinates (i.e. the
+          untransformed coordinate). At each node $v$ of the tree, an array $A_v$ is stored that keeps the points in $v$'s subtree sorted on $y$-coordinates
+          (i.e. by predecessor). Querying with an interval $[l,r]$ then finds nodes of the tree such that all of the leaves in $v$'s subtree are in
+          $[l,r]$ but the same is not true for $parent(v)$. At each of these nodes, the number of distinct colors contained in $v$'s subtree that
+          intersect $[l,r]$ is found by performing a binary search on $A_v$ to find the first point that has a predecessor greater than $l$. The index
+          of the point found gives the number of points in $v$'s subtree that have a predecessor less than $l$, which gives the count we are
+          interested in at the current node. The number of points found with $pred(p) < l$ in $A_v$ is added across all nodes searched. This process can be modified to answer the dynamic
+          counting problem, but it requires $BB(\alpha)$ trees, which I am not familiar with.
       \end{enumerate}
 
     \end{solution}
