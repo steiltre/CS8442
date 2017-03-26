@@ -258,7 +258,11 @@
           To solve the dynamic version of this problem. We use a priority search tree as before, but now for every color $c$, a balanced search tree
           $T_c$ must be maintained as well. $T_c$ is used to efficiently determine how to set $pred(p)$ when inserting a new point $p$ of color $c$.
 
-          To answer the static counting problem, a slightly different approach is needed to be able to easily find the number of colors intersected. The transformed points are stored in a balanced search tree based on their $x$-coordinates (i.e. the
+          To answer the static counting problem, a slightly different approach is needed to be able to easily find the number of colors intersected.
+          In the standard counting problem, an integer giving the size of subtrees can usually be used. Because we have transformed the problem to a
+          higher dimensional problem, an additional search is required to determine what the appropriate subtree size is.
+
+          The transformed points are stored in a balanced search tree based on their $x$-coordinates (i.e. the
           untransformed coordinate). At each node $v$ of the tree, an array $A_v$ is stored that keeps the points in $v$'s subtree sorted on $y$-coordinates
           (i.e. by predecessor). Querying with an interval $[l,r]$ then finds nodes of the tree such that all of the leaves in $v$'s subtree are in
           $[l,r]$ but the same is not true for $parent(v)$. At each of these nodes, the number of distinct colors contained in $v$'s subtree that
