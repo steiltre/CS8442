@@ -138,10 +138,29 @@
 
        \begin{enumerate}
          \item
+           Take any edge $e$ in the Gabriel graph. Let $p$ and $q$ be the endpoints of $e$. Then the disc with diameter $pq$ does not contain any
+           other point of $P$. Therefore, there is an edge between $p$ and $q$ in the Voronoi diagram of $P$, which implies there is an edge between
+           $p$ and $q$ in the Delaunay graph. This holds for any edge in the Gabriel graph, so the Gabriel graph is contained in $DG(P)$.
 
          \item
+           Assume the Delaunay edge between $p$ and $q$ intersects the dual Voronoi edge. Let this intersection point be $r$. Then $r$ is on the
+           boundary between $Vor(p)$ and $Vor(q)$. One of the structural properties of Voronoi diagrams listed in class says there is a circle with
+           $p$ and $q$ on its boundary with no other sites of $P$ on the boundary or in the interior. $r$ is on the (straight) Delaunay edge between
+           $p$ and $q$, so this circle has $pq$ as its diameter. Therefore, $p$ and $q$ are adjacent in the Gabriel graph of $P$.
+
+           Now, assume $p$ and $q$ are adjacent on the Gabriel graph. Then we can draw the disc with diameter $pq$. Let $r$ be the midpoint of the
+           line between $p$ and $q$, i.e. $r$ is the center of the disc. The disc contains no sites other than $p$ and $q$ by the definition of the
+           Gabriel graph. Therefore, $r$ is on the Voronoi edge between $p$ and $q$. This means $r$ is on the Voronoi edge and the line segment
+           between $p$ and $q$, but this line segment is exactly the Delaunay edge between $p$ and $q$. Thus the Voronoi edge and Delaunay edge
+           intersect.
 
          \item
+           To construct a Gabriel graph, we can begin by computing the Delaunay graph and the Voronoi diagram. For every edge in the Delaunay graph,
+           we take the associated edge in the Voronoi diagram and check if the Voronoi edge and Delaunay edge intersect. If they do, we leave the edge
+           in the graph. Otherwise, we remove it. By (a) and (b), this algorithm will return the correct graph.
+
+           Computing the Voronoi diagram and Delaunay graph take $O(n \log n)$ time. We know there are $O(n)$ edges in each, so we can use our
+           constant time intersection check to reduce to the Gabriel graph in $O(n)$ time. Combining these steps, we have a run-time of $O(n \log n)$.
 
        \end{enumerate}
 
