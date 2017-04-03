@@ -1,0 +1,152 @@
+%        File: hw4.tex
+%     Created: Sun Apr 02 11:00 AM 2017 C
+% Last Change: Sun Apr 02 11:00 AM 2017 C
+%
+
+\documentclass[11pt]{article}
+
+\title{CSci 8442 Homework 4 }
+\date{4/17/17}
+\author{Trevor Steil}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{esint}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{bbm}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{claim}{Claim}
+%\newtheorem*{problem}{Problem}
+%\newtheorem*{lemma}{Lemma}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\supp}[1]{\mathop{\mathrm{supp}}\left(#1\right)}
+\newcommand{\lip}[1]{\mathop{\mathrm{Lip}}\left(#1\right)}
+\newcommand{\curl}{\mathrm{curl}}
+\newcommand{\la}{\left \langle}
+\newcommand{\ra}{\right \rangle}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\div}{\mathrm{div}}
+
+\newenvironment{problem}{\textbf{Problem.}}
+
+\newenvironment{solution}[1][]{\emph{Solution #1}}
+
+\algnewcommand{\Or}{\textbf{ or }}
+\algnewcommand{\And}{\textbf{ or }}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+  \item
+    \begin{problem}
+      An important special case of the point location problem is when the underlying subdivision is a simple polygon: the answer to a point location
+      query here is whether a query point lies inside or outside the polygon. In this case, the query can be answered efficiently using a simpler data
+      structure than the one used for general subdivisions.
+
+      Let $P$ be a $n$-vertex simple polygon, with its vertices given in clockwise order in an array. For each of the following cases, describe
+      briefly but precisely, in words, how to answer a point location query for a query point $q$ in time $O(\log n)$ using $O(n)$ space. (Pseudocode
+      is not needed.) Pre-processing of $P$ is allowed. State any data structure you use.
+
+      \begin{enumerate}
+        \item $P$ is convex
+        \item $P$ is $y$-monotone
+        \item $P$ is star-shaped, i.e., there is a point, $r$, inside $P$ from which all points, $s$, inside $P$ are visible along a straight line,
+          i.e., the line segment $\overline{rs}$ is contained in $P$. Assume that you are given $r$.
+      \end{enumerate}
+
+    \end{problem}
+
+    \begin{solution}
+      \begin{enumerate}
+        \item
+
+        \item
+
+        \item
+      \end{enumerate}
+    \end{solution}
+
+  \item
+    \begin{problem}
+      Let $S = \{p_1, p_2,\dots, p_n\}$ be a set of $n$ sites (points) in the plane. Let $Vor(S)$ be the Voronoi Diagram of $S$. LEt $B$ be an
+      axes-parallel bounding box that is large enough to enclose all the vertices of $Vor(S)$. Assume that the subdivision consisting of $B$ and the
+      part of $Vor(S)$ that is inside $B$ has been computed into a DCEL structure. (See the figure on p. 166 for an example of such a subdivision.)
+      Assume that each (finite) face of the DCEL also stores the associated site.
+
+      A site $p_j$ is a nearest neighbor of another site $p_i$ if the Euclidean distance between $p_i$ and $p_j$ is no larger than the Euclidean
+      distance between $p_i$ and any other site. (Note that $p_i$ can have more than one nearest neighbor. Also note that if $p_j$ is the nearest
+      neightbor of $p_i$, then it is not necessary that $p_i$ is the nearest neight of $p_j$.) Computing efficiently the nearest neighbors of each
+      site in $S$ is an important problem, with application in clustering, collision avoidance, etc.
+
+      \begin{enumerate}
+        \item Let $V(p_i)$ be the Voronoi polygon of $p_i$. Prove that every nearest neighbor of $p_i$ defines an edge of $V(p_i)$. (Note that the
+          converse is not necessarily true, i.e. every edge of $V(p_i)$ need not define a nearest neighbor of $p_i$.)
+
+        \item Show how to use $Vor(S)$ and the result in part (a) to compute for each site $p_i \in S$ all of its nearest neighbors. (This implies a
+          solution to the closest pair problem on $S$.) The overall running time should be $O(n)$. You may describe your solution in words, but
+          please be clear and precise.
+      \end{enumerate}
+    \end{problem}
+
+    \begin{solution}
+       \begin{enumerate}
+         \item
+
+         \item
+       \end{enumerate}
+
+     \end{solution}
+
+   \item
+     \begin{problem} Ex 9.13, p. 217
+
+       The \emph{Gabriel graph} of a set $P$ of points in the plane is defined as follows: Two points $p$ and $q$ are connected by an edge of the
+       Gabriel graph if and only if the disc with diameter $pq$ does not contain any other point of $P$.
+
+       \begin{enumerate}
+         \item Prove that $DG(P)$ contains the Gabriel graph of $P$.
+
+         \item
+           Prove that $p$ and $q$ are adjacent in the Gabriel graph of $P$ if and only if the Delaunay edge between $p$ and $q$ intersects its dual
+           Voronoi edge.
+
+         \item Give an $O(n \log n)$ time algorithm to compute the Gabriel graph of a set of $n$ points.
+
+       \end{enumerate}
+
+     \end{problem}
+
+     \begin{solution}
+
+       \begin{enumerate}
+         \item
+
+         \item
+
+         \item
+
+       \end{enumerate}
+
+     \end{solution}
+\end{enumerate}
+\end{document}
+
+
