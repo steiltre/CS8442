@@ -77,16 +77,57 @@
     \begin{solution}
       \begin{enumerate}
         \item
+          Let a horizontal line intersect $P$ in two points $p$ and $q$. Then by definition of convexity, all points between $p$ and $q$ must also
+          belong to $P$. Therefore, any horizontal line can intersect $P$ at most twice, and $P$ is $y$-monotone. Therefore, we will use the algorithm
+          given in part (b) for convex polygons as well.
 
         \item
+          We begin by sorting the points of $P$ by $y$-coordinate. Call the points sorted in this way $p_1, \dots, p_n$. Consider horizontal lines
+          passing between $p_i$ and $p_{i+1}$ for some $1 \leq i \leq n-1$. There are no points of $P$ in the slab between these two lines because of
+          the sorting. Because $P$ is $y$-monotone, the horizontal lines intersect $P$ in at most two points each. Because of these facts, we have a
+          unique segment defining the right side of $P$ in this slab and a unique segment defining the left side of $P$ in this slab.
+
+          Guided by the observations above, we place the points of $P$ in an array $A$ sorted by nondecreasing $y$-coordinate. Associated to each adjacent
+          pair in $A$, we store the segments defining the left and right segments of $P$. To query our array with a point $q$, we perform a binary search to determine
+          the pair of points $p_i$, $p_{i+1}$ that define the horizontal slab $q$ is in. If $q$ is found to lie below $p_1$ or above $p_n$, it cannot
+          be inside $P$. Otherwise, we use sidedness tests to determine if $q$ is in $P$. If $q$ is to the right of the associated left segment of $P$
+          and to the left of the associated right segment of $P$, then the query returns ``true''. Otherwise, the query returns ``false''. In the case
+          that $q$ has the same $y$-coordinate as a point $p$ defining $P$, then either slab above or below $p$ can be used for the query (unless $p$
+          is the highest or lowest point in $P$, in which case the slab intersecting the interior of $P$ must be used).
+
+          Correctness of this query should be clear. A query point is contained in $P$ if and only if it intersects one of the horizontal slabs
+          defined by the points sorted by nondecreasing $y$-coordinate and is found between the left and right segments of the boundary of $P$ that
+          intersect this slab. These conditions are exactly the conditions checked above.
+
+          This algorithm sorts points of $P$, giving a precomputing time of $O(n \log n)$. $A$ stores each of the $n$ vertices of $P$ exactly once,
+          and associates $O(1)$ edges to each adjacent pair in $A$. Therefore, the storage requirements are $O(n)$. Querying requires a binary search
+          on $A$ followed by a constant number of sidedness tests, giving a query time of $O(\log n)$.
 
         \item
+          For star-shaped polygons, the algorithm looks very similar to that of $y$-monotone polygons. Without loss of generality, we may assume $r$
+          is placed at the origin by shifting $P$. We want the points defining $P$ to be sorted in angular order relative to the positive $x$-axis.
+          The points are given in clockwise order, so this is already the case. If we needed to sort them, we could use the sorting algorithm from
+          Homework 1.
+
+          As in part (b), we have an array $A$ with the points defining $P$ sorted, this time in angular order. To query this structure with a query
+          point $q$, we perform a binary search using the constant time angle comparison operator. This returns a pair of points $p_i$ and $p_{i+1}$
+          such that $q$ is intersected by a ray from the origin as it sweeps clockwise between $p_i$ and $p_{i+1}$. Next, we determine if the segments
+          $\overline{rq}$ and $\overline{p_i p_{i+1}}$ intersect. If they do, $q$ is outide $P$. If they don't, $q$ is inside $P$. In this radial
+          problem, we consider the array $A$ having wraparound at its ends so $p_1$ and $p_n$ are adjacent. If $q$ induces the same angle with the
+          positive $x$-axis as a vertex $p_i$ of $P$, $p_{i-1}$ or $p_{i+1}$ can be used as the second point defining the segment on the boundary of
+          $P$. The test for segment intersection could be replaced by a sidedness test, but the segment intersection is more indicative of what is
+          happening with the definition of star-shaped polygons.
+
+          The precomputing time is $O(n \log n)$ if the points needed to be placed in angular order. If they are already in order, no precomputing is
+          needed. The array $A$ stores only the vertices of $P$, so the storage required is $O(n)$. The query algorithm requires a binary search and a
+          single segment intersection test, so the query time is $O(\log n)$.
+
       \end{enumerate}
     \end{solution}
 
   \item
     \begin{problem}
-      Let $S = \{p_1, p_2,\dots, p_n\}$ be a set of $n$ sites (points) in the plane. Let $Vor(S)$ be the Voronoi Diagram of $S$. LEt $B$ be an
+      Let $S = \{p_1, p_2,\dots, p_n\}$ be a set of $n$ sites (points) in the plane. Let $Vor(S)$ be the Voronoi Diagram of $S$. Let $B$ be an
       axes-parallel bounding box that is large enough to enclose all the vertices of $Vor(S)$. Assume that the subdivision consisting of $B$ and the
       part of $Vor(S)$ that is inside $B$ has been computed into a DCEL structure. (See the figure on p. 166 for an example of such a subdivision.)
       Assume that each (finite) face of the DCEL also stores the associated site.
@@ -109,8 +150,24 @@
     \begin{solution}
        \begin{enumerate}
          \item
+          The nearest neighbors of $p_i$ all lie on a circle $C$ that is centered at $p_i$ and contains no sites in its interior (other than $p_i$).
+          If we take a site $p_j$ on $C$, we can consider a circle $C'$ obtained by shrinking $C$ to have $p_i$ and $p_j$ on its boundary. Then $C'
+          \subset C$ because $C$ and $C'$ are tangent at $p_j$ and $C'$ has a smaller radius than $C$. Therefore, the interior of $C'$ contains no
+          sites of $S$. Also, $C'$ has no additional sites on its boundary because the only point it shares with $C$ is $p_j$. Therefore, $C'$ is a
+          circle with exactly two sites on its boundary and no sites in its interior. Thus we have a Voronoi edge between $p$ and $q$ in $Vor(S)$.
+          This Voronoi edge is an edge of $V(p_i)$.
 
          \item
+           We need to be able to take $Vor(S)$ and ``remove'' edges that do not correspond to a nearest neighbor (we will not actually remove any
+           edges from the DCEL). To do this, we can walk along each face of the DCEL. Each face is associated to a site $p_i \in S$. Any nearest
+           neighbor to $p_i$ will share a Voronoi edge with $p_i$ by part (a). Because of this, we can walk along the edges bounding $V(p_i)$ and
+           compute the distance to the site associated to each edge. The sites that have the minimum distance will be the nearest neighbors for $p_i$.
+           By repeating this for all vertices, we get the nearest neighbors for every vertex in $S$.
+
+           In this algorithm, we walk along each of the edges of the Voronoi diagram twice. At each edge, we do a constant amount of work. We know the
+           number of edges in a Voronoi diagram is $O(n)$, so we have a $O(n)$ algorithm. If we want to be slightly more careful and consider the
+           effects of $B$, we see that $B$ has four sides, so no face of $Vor(S)$ can share more than four edges with $B$. The number of faces is
+           $O(n)$, so we get another $O(n)$ contribution from walking around the edges of $B$.
        \end{enumerate}
 
      \end{solution}
