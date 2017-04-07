@@ -3,7 +3,7 @@
 % Last Change: Thu Mar 16 10:00 PM 2017 C
 %
 
-\documentclass[12pt]{article}
+\documentclass[a4paper, 11pt]{article}
 
 \title{Power Diagrams and Additively Weighted Voronoi Diagrams }
 \date{4/24/17}
@@ -13,6 +13,7 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage[backend=biber,style=numeric,citestyle=numeric,style=numeric]{biblatex}
+\usepackage[margin=1in]{geometry}
 \usepackage{esint}
 \usepackage{enumitem}
 \usepackage{algorithm}
@@ -238,6 +239,99 @@ This completes the correspondence between upper envelopes in $\R^3$ and power di
 \cite{comp_geom}), we get the final correspondence between convex hulls in $\R^3$ and power diagrams in $\R^2$.
 
 \section{Algorithms}
+
+\subsection{Fortune's Sweepline Algorithm}
+
+We begin with a description of Fortune's algorithm for computing Voronoi diagrams. Following this, we will give interpretations of this algorithm in
+terms of cone arrangements. From here we will describe the changes necessary to adapt Fortune's algorithm to computing an additively weighted Voronoi
+diagram.
+
+The obvious obstacle with developing a sweepline algorithm for computing Voronoi diagrams is that sites will be reached by a sweepline in the middle
+of its Voronoi cell. Therefore, the algorithm must have some way of identifying the creation of a new cell before it has reached a site. One method of
+doing this is to perform a transformation that maps a site to the bottom of its Voronoi cell. A sweepline algorithm could then identify new cells as
+they are formed and compute a transformed Voronoi diagram. After this transformed Voronoi diagram has been completed, the Voronoi diagram can be
+obtained by inverting the previous transformation considered \cite{fortune_sweepline}.
+
+\subsubsection{Algorithm Description}
+Another way of interpreting Fortune's algorithm is using a sweepline and a beach line. We will give an overview of this associated algorithm. Many
+details and proofs will not be covered, but they can be found in \cite{comp_geom}. The idea behind this approach is to use a
+horizontal sweepline, $l$, that sweeps down the plane, while the beach line follows behind the sweepline and determines the boundary between the portion of the Voronoi diagram that cannot be
+changed by anything past $l$ and the region that can still change.
+
+To understand the structure of the beach line, we must understand what points in the plane will not be affected by any sites past $l$.
+Consider a single site $p_i$ and point $q$ above $l$. If $d(p,q) < d(q,l)$, where $d(q,l)$ is understood to be the distance between $q$ and its
+orthogonal projection onto $l$, then
+no site not already reached by $l$ can be closer to $q$ than $p_i$. Similarly, if $d(p,q) > d(q,l)$, then a site just
+below the sweepline could be closer to $q$ than $p_i$. The boundary between these two regions is the set of points that are equidistant from $p_i$ and
+$l$. Therefore, this boundary is a parabola. Considering all sites at once, $q$ can only be changed by a site below $l$ if $d(p,q) > d(q,l)$ for all
+currently known sites $p$. Therefore, the beach line is given by the bottom of the parabolas obtained for each individual site.
+
+If we look at the intersection of two parabolic arcs on the beach line, these points will be equidistant from the sites associated to each parabolic
+arc and $l$. This means as the sweep line moves, the beach line changes behind it and traces out the edges of the Voronoi diagram. To compute the
+Voronoi diagram, we then need to understand how the beach line changes as new parabolic arcs form and old parabolic arcs are absorbed by the others.
+
+Parabolic arcs can only be added when $l$ reaches a new site. At this point, a degenerate parabolic arc is added, which is just a vertical line
+extending from the new site to the beach line. As $l$ continues downward, this parabola will ``open up'' and contribute to the beach line. Parabolic
+arcs are removed from the beach line when they shrink down to a point. This can also be thought of as the two neighboring arcs expanding until the
+center arc is squeezed to a single point, call it $q$. Each of the three arcs described correspond to unique sites $p_i, p_j$, and $p_k$.
+\textbf{DESCRIBE THIS BETTER} At the point in time when the center parabolic arc has been squeezed to the single point $q$, $q$ is equidistant from
+$p_i, p_j$, and $p_k$. Also, by the definition of the parabolic arcs, $q$ is equidistant from $l$, and is in fact tangent to $l$. Therefore, $q$ is a
+vertex of the Voronoi diagram.
+
+From the above considerations, the only times the structure of the beach line changes are when $l$ reaches a new site and when a circle lying on top
+of $l$ has three sites contributing to the beach line on its boundary. Call these two events site events and circle events, respectively. At a site
+event, a new parabolic arc is added. If this parabolic arc splits a single arc in two, the two intersection points trace out the new Voronoi edge in
+both directions as $l$ continues downward. If the vertical line created when a new site is reached intersects two parabolic arcs of the beach line, we
+are in a site event which is also a circle event and will treat it as a circle event. At a circle event, multiple edges intersect in a vertex, and a
+new edge is traced out by the remaining parabolic arcs.
+
+These events are stored in an event queue, $Q$. Events are sorted by $y$-value. To store the structure of the beach line, a balanced binary search
+tree, $T$, is constructed with the parabolic arcs stored at the leaves. Each arc is also associated with the
+site it corresponds to. The internal nodes store the intersection points of the arcs of the beach line. To insert a new parabolic arc that is created
+when the sweepline crosses a site $p$, a binary search is performed on $T$ using $p_x$, the $x$-coordinate of $p$, to determine where to place the new
+parabolic arc. The intersection points stored at the nodes of $T$ are not directly stored because they depend on the position of the sweepline.
+Instead, they are calculated as the search is performed. Every leaf of $T$ stores a pointer to the circle event in $Q$ which will remove the
+associated arc from the beach line. If no such event exists or has not been calculated yet, this pointer is set to \texttt{nil}.
+
+The Voronoi diagram is stored in a DCEL structure as it is built. Internal nodes in $T$ contain pointers to one of the half-edges in the DCEL it is
+updating. After the Voronoi diagram has been constructed, a large bounding box is added to give a valid DCEL structure.
+
+\subsubsection{Interpretation Using Cone Arrangements}
+
+The beach line used in Fortune's algorithm can be seen as the boundary of regions where sites below the sweepline can affect the Voronoi diagram being
+computed. It also has a nice interpretation in terms of the cone arrangements previously mentioned that makes it clear how to generalize Fortune's
+algorithm for computing additively weighted Voronoi diagrams.
+
+For Voronoi diagrams, the cone arrangements involve cones with their vertices at the sites in the $xy$-plane because a Voronoi diagram is an
+additively weighted Voronoi diagram with all weights being zero. Consider the sweepline from Fortune's algorithm as a plane in $\R^3$ that intersects
+the $xy$-plane in a horizontal line. If this plane is given by the equation $z = y + t$, the plane is parallel to the boundary of the cones.
+Therefore, the intersection of the sweep plane with the $xy$-plane is the sweepline from
+Fortune's algorithm, where $t$ is the parameter used to make the plane sweep over $\R^3$. Also, the intersection of this plane with the cones of the
+cone arrangement are exactly the parabolic arcs which give the beach line from above when projected onto the $xy$-plane. For this reason, Fortune's algorithm can best be thought of as a sweep-plane
+algorithm over the cone arrangement associated to sites. The Voronoi edges traced out by intersections of the parabolic arcs of the beach line are
+these parabolas on the cones intersecting to trace out the Voronoi edges of the lifted diagram.
+
+\subsubsection{Adaptation to Weighted Voronoi Diagrams}
+From the cone arrangement interpretation, we can see that the appropriate algorithm is the same sweep plane algorithm where the cone at site $p$ is
+now shifted up by the site's weight, $w(p)$ \cite{rosenberger_additive}. This can also be reinterpreted as a sweepline algorithm in the plane as
+above.
+
+Instead of sites located at points, we now consider site discs of radius $w(p_i)$ centered at site $p(i)$. Parabolas are added to the beach
+line when the sweep line reaches the bottom of a site's disc. This corresponds to when the sweep plane reaches the vertex of the associated cone. The
+parabola that is added has its focus at the site $p_i$, and its directrix begins touching the focus, just as in Fortune's algorithm, that is, the
+directrix for a given parabola lags behind the sweepline by a distance of $w(p_i)$. It is worth noting that in this situation, a parabola may be added
+when the associated site is already behind the beach line, creating a situation where a new Voronoi cell is not added.
+
+As before, we do not have to explicitly track these parabolas. The structure of the beach line only changes at site events and circle events. Site
+events are described above and potentially add new parabolas to the beach line. Circle events are defined similarly to the circle events for
+unweighted Voronoi diagrams, but now a circumcircle must lie tangent to the sweepline and be tangent to the site discs associated to three adjacent
+parabolas. In this case, the center of the circumcircle is a vertex of the weighted Voronoi diagram, and the middle parabola is removed.
+
+The same priority queue, $Q$, balanced binary search tree, $T$, and DCEL structure can be used to store the events that change the beach line's
+structure, the tree that stores the structure of the beach line, and the weighted Voronoi diagram being constructed. The DCEL structure returned will
+not be exactly the weighted Voronoi diagram because the DCEL will only contain straight edges, whereas a weighted Voronoi diagram can have edges that
+are hyperbolic arcs. The DCEL returned will only contain connectivity information for the diagram. /textbf{CAN WE STORE EXTRA VALUES TO GIVE THE
+ACTUAL DIAGRAM??}
 
 \printbibliography
 \end{document}
