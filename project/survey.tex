@@ -68,7 +68,7 @@ similar ways.
 The closest-neighbors Voronoi diagram for a set of $n$ sites $S \subset \R^2$ partitions the plane into regions, or Voronoi cells, where each cell is associated to a
 site $p \in S$ and is defined by
 \begin{equation*}
-  Vor(p) = \{ q \in \R^2 | d(p,q) < d(p',q) \text{ for all } p' \neq p \in S \} .
+  Vor(p) = \{ q \in \R^2 \ | \ d(p,q) < d(p',q) \text{ for all } p' \neq p \in S \} .
 \end{equation*}
 where $d(p,q)$ is the Euclidean distance between $p$ and $q$.
 
@@ -79,46 +79,63 @@ Voronoi diagram.
 Many other variations of Voronoi diagrams can be constructed through the use of weighted distance functions. Let $w: S \to \R^+$ be a function that defines
 the weight of sites in $S$. The multiplicatively weighted Voronoi diagram partitions the plane into cells defined by
 \begin{equation*}
-  Vor_{mul}(p) = \left\{ q \in \R^2 | \frac{d(p,q)}{w(p)} < \frac{d(p',q)}{w(p')} \text{ for all } p' \neq p \in S \right\}.
+  Vor_{mul}(p) = \left\{ q \in \R^2 \ \big| \ \frac{d(p,q)}{w(p)} < \frac{d(p',q)}{w(p')} \text{ for all } p' \neq p \in S \right\}.
 \end{equation*}
-The boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}. These diagrams tend to be more difficult
-to study because of the intersections and containments of cells.
+These diagrams tend to be more difficult to study and are qualitatively very different from standard Voronoi diagrams. For example,
+the boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}, and multiplicatively weighted Voronoi
+cells can be disconnected and may partition the plane into $\Theta(n^2)$ connected components \cite{aurenhammer_survey}.
 
 The additively weighted Voronoi diagram partitions the plane into cells defined by
 \begin{equation*}
-  Vor_{add}(p) = \left\{ q \in \R^2 | d(p,q) + w(p) < d(p',q) + w(p') \text{ for all } p' \neq p \in S \right\}.
+  Vor_{add}(p) = \left\{ q \in \R^2 \ | \ d(p,q) + w(p) < d(p',q) + w(p') \text{ for all } p' \neq p \in S \right\}.
 \end{equation*}
-This definition also has a useful geometric interpretation. For a site $p \in S$, let $\mathcal{D}_p$ be the disc of radius $w(p)$ centered at $p$. Then we
+
+A geometric object defined similarly to weighted Voronoi diagrams is the power diagram, which partitions the plane into power cells defined by
+\begin{equation*}
+  Vor_{pow}(p) = \{ q \in \R^2 \ | \ d^2(p,q) - w(p) \leq d^2(p',q) - w(p') \text{ for all } p' \neq p \in S \}.
+\end{equation*}
+For consistency, we will use $Vor_{pow}$ to denote power cells even though they are not given the name of Voronoi diagrams.
+The distance function used in power diagrams is called the \textit{power function} and is denoted
+$pow(q,p)$ where $q \in \R^2$ and $p \in \R^2$ is the center of a circle with radius $r(p)$.
+
+The definitions of additively weighted Voronoi diagrams and power diagrams given above required $w(p)$ to be positive. This requirement is not
+necessary because the definition of these Voronoi cells remains the same if any constant is added to $w(p)$ for all $p$. Requiring weights to be at
+least nonnegative will make some of the following geometric relations easier to visualize.
+
+In the remaining sections, additively weighted Voronoi diagrams and power diagrams will be the main consideration. We will use the term weighted
+Voronoi diagram to refer to additively weighted Voronoi diagrams. Also, the definitions given above naturally extend to higher dimensions. We will
+consider diagrams in $\R^2$, but many ideas and results will hold in higher dimensions as well. Some of these extensions and the differences they
+present will be highlighted.
+
+\subsection{Basic Geometric Results}
+
+The definition of additively weighted Voronoi diagrams has a useful geometric interpretation. For a site $p \in S$, let $\mathcal{D}_p$ be the disc of radius $w(p)$ centered at $p$. Then we
 can define
 \begin{equation*}
-  Vor_{add}(p) = \left\{ q \in \R^2 | \max_{\tilde{p} \in \mathcal{D}_p} d(\tilde{p}, q) < \max_{\tilde{p}' \in \mathcal{D}_{p'}} d(\tilde{p}', q) \text{
+  Vor_{add}(p) = \left\{ q \in \R^2 \ | \ \max_{\tilde{p} \in \mathcal{D}_p} d(\tilde{p}, q) < \max_{\tilde{p}' \in \mathcal{D}_{p'}} d(\tilde{p}', q) \text{
   for all } p' \neq p \in S \right\},
 \end{equation*}
 that is, we can measure distances as the maximum distance to any point in the disc centered at a given site \cite{rosenberger_additive}.
 
-It is worth noting that $p$ is not necessarily contained in $Vor_{add}(p)$ in the additively weighted case. Unlike the straight-line boundaries of standard
-Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments \cite{aurenhammer_additive}.
+We can similarly interpret power diagrams in terms of circles. For $p \in S$, consider a circle $C(p)$ of radius $r(p) = \sqrt{w(p)}$ centered at $p$. Using the
+Pythagorean theorem, we can see for any point $q \in \R^2$, $pow(q,p) = d^2(p,q) - r^2(p)$ gives the distance from $q$ to the circle centered at $p$
+measured along a line tangent to $C(p)$. Throughout the paper, we may speak of weighted Voronoi diagrams and power diagrams by thinking of $S$ as
+containing a set of points in $\R^2$ with associated weights, or we may refer to $S$ as a set of circles with radii given by the appropriate weights.
 
-A geometric object defined similarly to weighted Voronoi diagrams is the power diagram. Consider a Voronoi diagram where sites in $S$ are replaced by
-circles with possibly distinct radii. Instead of measuring the distance from a point in the plane to the center of the circles, we measure the distance
-along lines tangent to the circles. Using the Pythagorean Theorem, this is equivalent to measuring distances as $d^2(p,q) -
-r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r(p)$ \cite{aurenhammer_power}. This leads to a partition of the plane into power cells defined by
-\begin{equation*}
-  Vor_{pow}(p) = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \text{ for all } p' \in S \}.
-\end{equation*}
-For consistency, we will use $Vor_{pow}$ to denote power cells even though they are not given the name of Voronoi diagrams.
+It is worth noting that $p$ is not necessarily contained in $Vor_{add}(p)$ or $Vor_{pow}(p)$. This can be seen from the definition if $w(p)$ is taken
+to be large relative to the distance between $p$ and another site $p'$. This can also be interpreted as the associated circles being very large.
+Despite this difference, the Voronoi cells of weighted Voronoi diagrams and power diagrams are still connected, and there are $O(n)$ vertices, edges,
+and faces in the diagrams \cite{aurenhammer_power}. \textbf{CHECK IF THIS IS TRUE FOR WEIGHTED VORONOI}
 
-This partitioning is known as the power diagram of $S$. The distance function used in power diagrams is called the \textit{power function} and is denoted
-$pow(q,p)$ where $q \in \R^2$ and $p \in \R^2$ is the center of a circle with radius $r(p)$.
+Unlike the straight-line boundaries of standard
+Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments
+\cite{aurenhammer_additive}. The boundaries between power cells are straight lines and line segments like in the case of standard Voronoi diagrams.
+\textbf{FIND REFERENCE}
 
 Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
 Power diagrams are known to have connections to arrangements of hyperplanes in $\R^3$ ($\R^{d+1}$ in general) \cite{aurenhammer_survey}. The notions
 of power diagrams and additively weighted Voronoi diagrams can be connected through embeddings of additively weighted Voronoi diagrams into
 higher-dimensional power diagrams \cite{aurenhammer_additive}. This same connection holds for other generalized Voronoi diagrams.
-
-In the remaining sections, additively weighted Voronoi diagrams and power diagrams will be the main consideration. We will use the term weighted
-Voronoi diagram to refer to additively weighted Voronoi diagrams. Also, the definitions given above naturally extend to higher dimensions. We will
-consider diagrams in $\R^2$, but many ideas and results will hold in higher dimensions as well.
 
 \section{Relationships to Other Geometric Structures}
 \label{sec:geom_rel}
