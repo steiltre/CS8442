@@ -129,8 +129,14 @@ and faces in the diagrams \cite{aurenhammer_power}. \textbf{CHECK IF THIS IS TRU
 
 Unlike the straight-line boundaries of standard
 Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments
-\cite{aurenhammer_additive}. The boundaries between power cells are straight lines and line segments like in the case of standard Voronoi diagrams.
-\textbf{FIND REFERENCE}
+\cite{aurenhammer_additive}. Let $p, q \in S$ be circles with radii $r(p), r(q)$ respectively. The set of $s = (x,y) \in \R^2$ where $pow(s,p) = pow(s,q)$
+is given by the line
+\begin{equation}
+  y = -\frac{q_x - p_x}{q_y - p_y} x + \frac{1}{2(q_y - p_y)} \left(q_x^2 + q_y^2 - p_x^2 - p_y^2 - r^2(q) + r^2(p) \right),
+  \label{eq:pow_intersect}
+\end{equation}
+where $p = (p_x, p_y)$ and $q = (q_x, q_y)$. From this, it is apparent that the boundary between power cells is a straight line perpendicular to the
+line that is perpendicular to the straight line through $p$ and $q$.
 
 Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
 Power diagrams are known to have connections to arrangements of hyperplanes in $\R^3$ ($\R^{d+1}$ in general) \cite{aurenhammer_survey}. The notions
@@ -492,8 +498,29 @@ an algorithm for solving the decision problem in $O(\log n)$ time. By Theorem 1.
 
 \subsection{Detecting Intersection of Spheres}
 
-Use fact that boundary between power cells is through weighted bisector of line between centers of circles to say circles intersect if and only if
-they intersect the edge between cells. There are $O(n)$ total edges, each of which needs to be checked against two circles. Check in $O(n)$ time.
+Let $B = \{ b_1,\dots, b_n \}$ be a collection of open balls. We would like to be able to tell if any of these balls intersect. We can use power
+diagrams and the following to detect intersections.
+
+\begin{lemma}
+  $b_i \cap b_j \neq \emptyset$ for some $i \neq j$ if and only if $b_j \cap (Vor_{pow}(b_j))^c$ for some $j$.
+  \label{lem:ball_intersect}
+\end{lemma}
+\begin{proof}
+  Let $x \in b_j \cap ( Vor_{pow}(b_j))^c$. By Lemma \ref{lem:pow_query}, $x \in b_i \cap Vor_{pow}(b_i)$ for some $i$. Because $x \not\in
+  Vor_{pow}(b_j)$, $i \neq j$ and $b_i \cap b_j \neq \emptyset$.
+
+  Now let $b_i \cap b_j \neq \emptyset$. For any $x \in b_i \cap b_j$, $x$ is in exactly one power cell. Without loss of generality, $x \not\in
+  Vor_{pow}(b_j)$. Then $b_j \cap (Vor_{pow})^c \neq \emptyset$.
+\end{proof}
+
+By Lemma \ref{lem:ball_intersect}, we only need to check if any $b_i$ intersect the complement of their power cells \cite{aurenhammer_discs}. This can
+be done by checking if the center of $b_i$ is in its own power cell and checking each edge of the power cell for intersections with $b_i$.
+
+This solution requires computing the power diagram for the balls in $B$, which takes $O(n \log n)$ time. Each edge is checked for intersections with
+two power cells, and the center of each ball is only checked if it is contained in its own power cell. Because there are $O(n)$ edges, checking for
+edge intersections takes $O(n)$ total time. Because the power cells are convex, checking intersections of the centers of balls with their power cells
+takes $O(n \log n)$ total time. Therefore, this algorithm has a complexity of $O(n \log n)$. This is an improvement over the naive $O(n^2)$ method of
+checking each pair for intersections.
 
 \subsection{Clustering}
 
