@@ -65,10 +65,10 @@ similar ways.
 
 \subsection{Definitions}
 
-The closest-neighbors Voronoi diagram for a set of $n$ sites $S \subset \R^2$ partitions the plane into regions, or Voronoi cells, where each cell is associated to a
+The closest-neighbors Voronoi diagram for a set of $n$ sites $S \subset \R^2$ partitions the plane into regions where each region is associated to a
 site $p \in S$ and is defined by
 \begin{equation*}
-  Vor(p) = \{ q \in \R^2 | d(p,q) < d(p',q) \text{ for all } p' \neq p \in S \} .
+  reg(p) = \{ q \in \R^2 | d(p,q) \leq d(p',q) \text{ for all } p' \in S \} .
 \end{equation*}
 where $d(p,q)$ is the Euclidean distance between $p$ and $q$.
 
@@ -77,38 +77,35 @@ same $k$ closest sites in $S$ gives rise to an order-$k$ Voronoi diagram \cite{a
 Voronoi diagram.
 
 Many other variations of Voronoi diagrams can be constructed through the use of weighted distance functions. Let $w: S \to \R^+$ be a function that defines
-the weight of sites in $S$. The multiplicatively weighted Voronoi diagram partitions the plane into cells defined by
+the weight of sites in $S$. The multiplicatively weighted Voronoi diagram partitions the plane into regions defined by
 \begin{equation*}
-  Vor_{mul}(p) = \left\{ q \in \R^2 | \frac{d(p,q)}{w(p)} < \frac{d(p',q)}{w(p')} \text{ for all } p' \neq p \in S \right\}.
+  reg_{mul}(p) = \left\{ q \in \R^2 | \frac{d(p,q)}{w(p)} \leq \frac{d(p',q)}{w(p')} \text{ for all } p' \in S \right\}.
 \end{equation*}
-The boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}. These diagrams tend to be more difficult
-to study because of the intersections and containments of cells.
+The boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}.
 
-The additively weighted Voronoi diagram partitions the plane into cells defined by
+The additively weighted Voronoi diagram partitions the plane into regions defined by
 \begin{equation*}
-  Vor_{add}(p) = \left\{ q \in \R^2 | d(p,q) + w(p) < d(p',q) + w(p') \text{ for all } p' \neq p \in S \right\}.
+  reg_{add}(p) = \left\{ q \in \R^2 | d(p,q) + w(p) \leq d(p',q) + w(p') \text{ for all } p' \in S \right\}.
 \end{equation*}
-This definition also has a useful geometric interpretation. For a site $p \in S$, let $\mathcal{D}_p$ be the disc of radius $w(p)$ centered at $p$. Then we
+This definition also has a geometric interpretation. For a site $p \in S$, let $\mathcal{D}_p$ be the disc of radius $w(p)$ centered at $p$. Then we
 can define
 \begin{equation*}
-  Vor_{add}(p) = \left\{ q \in \R^2 | \max_{\tilde{p} \in \mathcal{D}_p} d(\tilde{p}, q) < \max_{\tilde{p}' \in \mathcal{D}_{p'}} d(\tilde{p}', q) \text{
-  for all } p' \neq p \in S \right\},
+  reg_{add}(p) = \left\{ q \in \R^2 | \max_{\tilde{p} \in \mathcal{D}_p} d(\tilde{p}, q) \leq \max_{\tilde{p}' \in \mathcal{D}_{p'}} d(\tilde{p}', q) \text{
+  for all } p' \in S \right\},
 \end{equation*}
 that is, we can measure distances as the maximum distance to any point in the disc centered at a given site \cite{rosenberger_additive}.
 
-It is worth noting that $p$ is not necessarily contained in $Vor_{add}(p)$ in the additively weighted case. Unlike the straight-line boundaries of standard
+It is worth noting that $p$ is not necessarily contained in $\tilde{R}_p$ in the additively weighted case. Unlike the straight-line boundaries of standard
 Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments \cite{aurenhammer_additive}.
 
 A geometric object defined similarly to weighted Voronoi diagrams is the power diagram. Consider a Voronoi diagram where sites in $S$ are replaced by
 circles with possibly distinct radii. Instead of measuring the distance from a point in the plane to the center of the circles, we measure the distance
 along lines tangent to the circles. Using the Pythagorean Theorem, this is equivalent to measuring distances as $d^2(p,q) -
-r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r(p)$ \cite{aurenhammer_power}. This leads to a partition of the plane into power cells defined by
+r^2(p)$ where $S$ contains a circle centered at $p$ of radius $r(p)$ \cite{aurenhammer_power}. This leads to a partition of the plane into regions defined by
 \begin{equation*}
-  Vor_{pow}(p) = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \text{ for all } p' \in S \}.
+  reg_{pow}(p) = \{ q \in \R^2 | d^2(p,q) - r^2(p) \leq d^2(p',q) - r^2(p') \text{ for all } p' \in S \}.
 \end{equation*}
-For consistency, we will use $Vor_{pow}$ to denote power cells even though they are not given the name of Voronoi diagrams.
-
-This partitioning is known as the power diagram of $S$. The distance function used in power diagrams is called the \textit{power function} and is denoted
+This is known as the power diagram of $S$. The distance function used in power diagrams is called the \textit{power function} and is denoted
 $pow(q,p)$ where $q \in \R^2$ and $p \in \R^2$ is the center of a circle with radius $r(p)$.
 
 Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
@@ -121,7 +118,6 @@ Voronoi diagram to refer to additively weighted Voronoi diagrams. Also, the defi
 consider diagrams in $\R^2$, but many ideas and results will hold in higher dimensions as well.
 
 \section{Relationships to Other Geometric Structures}
-\label{sec:geom_rel}
 The various Voronoi diagrams defined above have many connections to other geometric structures. There is the obvious connection to Delaunay
 triangulations, the dual of Voronoi diagrams, which we will not discuss. Frequently, Voronoi diagrams in the plane can be related to 3-dimensional
 objects.
@@ -198,17 +194,13 @@ First, we will need a few definitions. Let $U$ be the unit paraboloid in $\R^3$ 
 
 Let $H$ be a finite set of nonvertical planes in $\R^3$. Considering the height of a plane as a function of coordinates in the plane, we denote points
 on the plane $h \in H$ as $(x,y,h(x,y))$. We define the \textit{upper envelope} of $H$ to be the object obtained by taking the plane with highest
-$z$-coordinate above every point in the plane $z = 0$, that is,
+$z$-coordinate above every point in the plane, that is,
 \[ \mathcal{UE}(H) = \{ (x,y,z) | x,y \in \R, \ z = \max_{h \in H} h(x,y) \} .\]
 
 Consider a set of sites $P \subset \R^2$ with an associated radii $\{r(p) | p \in P\}$. For $p \in P$, we define $\Pi(p)$ to be the plane with height above a point
 $x \in \R^2$ given by
 \[ \Pi(p) : z = 2 p \cdot x - p^2 + r^2(p) ,\]
-where $p^2$ is used to denote $p \cdot p$. It can be shown that $\Pi$ is a bijection between spheres in $\R^2$ and nonvertical planes in $\R^3$ which
-intersect $U$. Intuitively, if we consider a site with $r(p) = 0$, then $\Pi(p)$ is tangent to $U$, fixing the normal vector to $\Pi(p)$. For $f(x) =
-x \cdot x$, $\nabla f(x) = 2x$, so a plane with any nonhorizontal normal vector can be found. Adding arbitrary constants shifts the obtained planes, to allow any
-nonvertical plane. In the definition of $\Pi(p)$, $r^2(p)$ is being added, which must be a positive number. This limits the only translations of
-tangent planes of $U$ to be such that an intersection with $U$ is maintained.
+where $p^2$ is used to denote $p \cdot p$.
 
 Now, we can begin to prove the correspondence between power diagrams and upper envelopes. First, we show the usefulness of the unit paraboloid $U$ in
 relation to the power function.
@@ -236,14 +228,13 @@ relation to the power function.
 Now we are able to prove the correspondence.
 
 \begin{theorem}
-  Let $H = \{ \Pi(p) | p \in S \}$. Then the projection of $\mathcal{UE}(H)$ on the plane $z=0$ is the power diagram of $S$.
-  \label{thm:ue_to_pow}
+  Let $H = \{ h(p) | p \in P \}$. Then the projection of $\mathcal{UE}(H)$ on the plane $z=0$ is the power diagram of $P$.
 \end{theorem}
 \begin{proof}
-  We must show $reg_{pow}(p)$ is exactly the projection of the facet $\mathcal{UE}(H)$ that is part of $\Pi(p)$.
+  We must show $reg_{pow}(p)$ is exactly the projection of the facet $\mathcal{UE}(H)$ that is part of $h(p)$.
 
-  Take $q \in reg_{pow}(p)$. Then by assumption, $pow(q,p) \leq pow(q,\tilde{p})$ for all $\tilde{p} \in S$. To use Lemma \ref{lem:proj}, we let $q_p''$ be the
-  vertical projection of $q$ onto $\Pi(p)$, and $q_{\tilde{p}}''$ be the vertical projection of $q$ onto $\Pi(\tilde{p})$. We notice the vertical projection
+  Take $q \in reg_{pow}(p)$. Then by assumption, $pow(q,p) \leq pow(q,\tilde{p})$ for all $\tilde{p} \in P$. To use Lemma \ref{lem:proj}, we let $q_p''$ be the
+  vertical projection of $q$ onto $h(p)$, and $q_{\tilde{p}}''$ be the vertical projection of $q$ onto $h(\tilde{p})$. We notice the vertical projection
   of $q$ onto $U$ is independent of $p$ and $\tilde{p}$, so we leave this as $q'$. By Lemma \ref{lem:proj},
   \begin{align*}
     d(q,q') - d(q,q_p'') &= pow(q,p) \\
@@ -251,18 +242,9 @@ Now we are able to prove the correspondence.
     &= d(q,q') - d(q,q_{\tilde{p}}'')
   \end{align*}
   Therefore, $d(q,q_p'') \geq d(q, q_{\tilde{p}}'')$. Because the projections are vertical, $d(q,q_p'')$ and $d(q, q_{\tilde{p}}'')$ are the heights of
-  $\Pi(p)$ and $\Pi(\tilde{p})$ above the $q$. Thus, the height $\Pi(p)$ is greater than or equal to the height of $\Pi(\tilde{p})$ above $q$ for all
-  $\tilde{p} \in S$. This means $\Pi(p)$ is in $\mathcal{UE}(H)$ above $q$, as we needed to show.
+  $h(p)$ and $h(\tilde{p})$ above the $q$. Thus, the height $h(p)$ is greater than or equal to the height of $h(\tilde{p})$ above $q$ for all
+  $\tilde{p} \in P$. This means $h(p)$ is in $\mathcal{UE}(H)$ above $q$, as we needed to show.
 \end{proof}
-
-By using the fact that $\Pi$ is a bijection between spheres in $\R^2$ and upper envelopes of collections of nonvertical planes that intersect $U$. To
-see this, take each such plane. Using $\Pi^{-1}$, a sphere can be obtained in $\R^2$. By applying Lemma \ref{lem:proj} similar to in the proof of
-Theorem \ref{thm:ue_to_pow}, facets of the upper envelope correspond to regions in the power diagram. This gives the following result:
-
-\begin{corollary}
-  There is a one-to-one correspondence between power diagrams in $\R^2$ and upper envelopes of arrangements of planes in $\R^3$ that intersect $U$.
-  \label{cor:ue_pow}
-\end{corollary}
 
 This completes the correspondence between upper envelopes in $\R^3$ and power diagrams in $\R^2$. Now we must show the duality of lower convex hulls
 and upper envelopes in $\R^3$. Let $h: z = ax + by + c$ be a plane in $\R^3$. As in \cite{aurenhammer_power}, we define
@@ -282,12 +264,6 @@ by writing out the general form of a plane through $p$, this is equivalent to
   \label{eq:duality3}
 \end{equation}
 
-We are able to use the same definition as above to map lines to lines, that is, for a line $l$ in $\R^3$, we define
-\begin{equation}
-  \Delta(l) = \bigcup_{h \supseteq l} \Delta(l).
-  \label{eq:duality4}
-\end{equation}
-
 From the forms of \eqref{eq:duality1} and \eqref{eq:duality3}, it is clear that $\Delta$ is an involution. These operations can be thought of as
 taking the plane $h: z = ax + bx - c$ and switching from $(a,b,c)$ as being coefficients and $(x,y,z)$ as being variables to $(x,y,z)$ being
 coefficients and $(a,b,c)$ as being variables. From here, we can see these transformations are incidence preserving and order preserving, that is, $p \in h$ if and only if
@@ -297,18 +273,7 @@ correspndence between points and planes in $\R^3$.
 Consider a set of points $P \subseteq \R^3$. $p \in P$ is on the lower convex hull of $S$ if and only if there is a plane $h$ with $p \in h$ and $h$
 is above $p'$ for all $p' \in S$. Using the order-preserving property of the duality transformation, this occurs if and only if there is an $h$ with $\Delta(h) \in
 \Delta(p)$ and $\Delta(p')$ is above $\Delta(h)$ for all $p' \in S$. This last statement characterizes a plane being in the upper envelope of a set of
-planes, giving the duality of lower convex hulls and upper envelopes in $\R^3$.
-
-Combining the correspondence between power diagrams and upper envelopes given in Corollary \ref{cor:ue_pow} with this duality, we have the following:
-
-\begin{theorem}
-  Power diagrams in $\R^2$ exactly correspond to convex hulls which arise from upper envelopes of nonvertical planes that intersect $U$.
-  \label{thm:ch_pow}
-\end{theorem}
-
-All of the results above were stated for power diagrams in $\R^2$ and upper envelopes and convex hulls in $\R^3$. It is easy to see these results can
-be extended to power diagrams in $\R^d$ and upper envelopes and convex hulls in $\R^{d+1}$.
-
+planes, giving the duality of lower convex hulls and upper envelopes in $\R^3$. It is easy to see this correspondence extends to arbitrary dimensions.
 \section{Algorithms}
 
 \subsection{Fortune's Sweepline Algorithm}
@@ -401,148 +366,12 @@ parabolas. In this case, the center of the circumcircle is a vertex of the weigh
 The same priority queue, $Q$, balanced binary search tree, $T$, and DCEL structure can be used to store the events that change the beach line's
 structure, the tree that stores the structure of the beach line, and the weighted Voronoi diagram being constructed. The DCEL structure returned will
 not be exactly the weighted Voronoi diagram because the DCEL will only contain straight edges, whereas a weighted Voronoi diagram can have edges that
-are hyperbolic arcs. The DCEL returned will only contain connectivity information for the diagram. \textbf{CAN WE STORE EXTRA VALUES TO GIVE THE
+are hyperbolic arcs. The DCEL returned will only contain connectivity information for the diagram. /textbf{CAN WE STORE EXTRA VALUES TO GIVE THE
 ACTUAL DIAGRAM??}
-
-\subsubsection{Computational Complexity}
-
-At each event, the DCEL structure being stored can be updated in $O(1)$ time. $T$ and $Q$ can both be updated in $\log(n)$ time. Each site event corresponds to a site in $S$, giving a $O(n \log n)$ term from site events. Circle
-events are slightly more difficult to count, but there are $O(n)$ circle events \cite{comp_geom}. Combining the site and circle events gives a total
-computational complexity of $O(n \log n)$.
 
 \subsection{Computing Power Diagrams}
 
-As in using Fortune's algorithm for computing additively weighted Voronoi diagrams, we will be making use of the geometric relations given in
-Section \ref{sec:geom_rel} to compute power diagrams. In this case, we will be using these relations in a much more direct way. To compute the power
-diagram of $S$, we can compute a lower convex hull by Theorem \ref{thm:ch_pow} and use the relations between lower convex hulls, upper envelopes and
-power diagrams to extract a power diagram \cite{aurenhammer_power} . This gives the following algorithm
 
-\begin{algorithm}
-  \begin{algorithmic}[1]
-    \Function{PowerDiagram}{S}
-    \State Compute the hyperplanes $\Pi(S) = \{ \Pi(p) | p \in S \}$ and points $\Delta( \Pi(S) ) = \{ \Delta( \Pi(p) ) | p \in S \}$
-    \State Compute the convex hull $CH( \Delta( \Pi(S) ) )$.
-    \State Compute the upper envelope $UE( \Pi(S) )$ by applying $\Delta$ to all vertices, edges, and faces of $CH( \Delta( \Pi(S) ) )$.
-    \State Project all edges of $UE( \Pi(S) )$ onto $\R^2$ to obtain $PD(S)$.
-    \EndFunction
-  \end{algorithmic}
-\end{algorithm}
-
-\subsubsection{Computational Complexity}
-
-Most of the steps for computing the power diagram involve applying transformations to sets of size $O(n)$. The only step that takes more time is
-computing the convex hull, which can be done in $O(n \log n)$ time \cite{comp_geom}. Therefore, the above gives an algorithm for computing power
-diagrams in $O(n \log n)$ time.
-
-\section{Applications of Weighted Voronoi Diagrams and Power Diagrams}
-
-\subsection{Point in Union of Balls}
-
-Let $B = \{b_1,\dots, b_n\}$ be a collection of open balls and $S = \{s_1, \dots, s_n\}$ be the circles bounding each of the balls in $B$. We would
-like to be able to efficiently determine if a query point $q$ lies in $\cup(B) = \cup_{i=1}^n b_i$. This query can be answered by using the power diagram
-built on the circles of $S$ \cite{aurenhammer_discs}. The main necessary result is the following.
-
-\begin{lemma}
-  \label{lem:pow_query}
-  $x \in \cup B$ if and only if $x \in Vor_{pow}(s_i) \cap b_i$ for some $i$.
-\end{lemma}
-\begin{proof}
-  Let $x \in Vor_{pow}(s_i) \cap b_i$. Then $x \in \cup B$ by assumption.
-
-  Now assume $x \in \cup B$. Assume $x \in b_j$. The power diagram partitions $\R^2$, so $x \in Vor_{pow}(s_i)$ for some $i$. We must show $x \in
-  b_i$. By definition of the power function, $x \in b_k \Leftrightarrow pow(x,s_k) \leq 0$ for any $k$. Because $x \in b_j$, $pow(x,s_j) \leq 0$. $x
-  \in Vor_{pow}(s_i)$, so
-  \begin{align*}
-    pow(x,s_i) &\leq pow(x, s_j) \\
-    &\leq 0
-  \end{align*}
-  Therefore, $x \in s_i$.
-\end{proof}
-
-With this result, answering the query problem can be reduced to determining whether $q \in Vor_{pow}(s_i) \cap b_i$ for all $i$. This is done by
-solving a planar point location problem on the power diagram of $S$ with $q$ as the query point. This will return a single region with an associated
-circle $s_i$. By Lemma \ref{lem:pow_query}, $x \in \cup B$ if and only if $x \in b_i$ for this particular value of $i$.
-
-The time necessary to perform this query is dominated by the planar point location problem involved, which is $O(\log n)$. After this, a single
-intersection test is performed on the necessary circle. This reduces the query time of the naive method of querying each ball in $B$, which has a
-computational complexity of $O(n)$.
-
-It is worth noting that this algorithm answers the decision problem. This exact method will not be able to return the entire set of $b_i$ that $q$
-intersects. The planar point location only returns a single circle in $S$ to check against. This can be overcome with methods of colored intersection
-searching \cite{ravi}. This is accomplished by considering each circle in $S$ to have a unique color. Each power diagram has size $O(n)$, and we have
-an algorithm for solving the decision problem in $O(\log n)$ time. By Theorem 1.8 in \cite{ravi}, we can output the results of the associated reporting problem using $O(n
-\log n)$ space in $O(\log n +k \log^2 n)$ time, where $k$ is the number of reported balls of $B$.
-
-\subsection{Detecting Intersection of Spheres}
-
-Use fact that boundary between power cells is through weighted bisector of line between centers of circles to say circles intersect if and only if
-they intersect the edge between cells. There are $O(n)$ total edges, each of which needs to be checked against two circles. Check in $O(n)$ time.
-
-\subsection{Clustering}
-
-For a set $S$ of $n$ points, $k$-clustering seeks to partition $S$ into $k$ nonempty subsets, or clusters, $S_1, \dots, S_k$ which minimizes some objective
-function. When certain objective functions are used, optimal clusterings can be expressed in terms of Voronoi diagrams. For a cluster $S_i$ and a
-parameter $\alpha$, define
-the variance of $S_i$ as
-\begin{equation}
-  Var^\alpha(S_i) = |S_i|^{\alpha-1} \sum_{p \in S_i} \| p - \overline{p}(S_i) \|^2
-  \label{def:var}
-\end{equation}
-where $\| \cdot \|$ denotes the Euclidean norm and $\overline{p}(S_i)$ is the centroid of $S_i$. The minimization we will consider is
-\begin{equation}
-  \min \left\{ \sum_{i=1}^k Var^\alpha (S_i) | (S_1,\dots, S_k) \text{ is a $k$-clustering of } S \right\}
-  \label{eq:cluster}
-\end{equation}
-for $\alpha = 1,2$.
-
-Consider the case of $\alpha = 1$. The clustering problem is then seeking to minimize the sum of squared distances from points of $S$ to the
-associated centroids. If we know the centroids associated to each cluster, this becomes a matter of associating each point of $S$ to the nearest
-centroid, which is the same as drawing the standard Voronoi diagram for the centroids and determining the Voronoi cell each point of $S$ belongs to.
-This results in the following
-
-\begin{theorem}
-  \label{thm:var_1}
-  Suppose $(S_1^\ast, \dots, S_k^\ast)$ is an optimal $k$-clustering for minimizing $\sum_{i=1}^k Var^1(S_i)$. Let $p_j^\ast$ be the associated
-  centroids for each cluster. Consider the Voronoi diagram obtained by using $\{ p_j^\ast \}$ as sites. Then $S_j = S \cap Vor(p_j^\ast)$, where
-  $Vor(p_j^\ast)$ is the Voronoi cell associated to $p_j^\ast$ \cite{inaba_clustering} .
-\end{theorem}
-
-A similar theorem holds when minimizing $\sum_{i=1}^k Var^2(S_i)$, but now a Voronoi diagram that is weighted additively and multiplicatively must be
-considered. For this result, we will consider sites $\{ p_j \}$ with multiplicative weights $\nu_j$ and additive
-weights $\sigma_j$ for $j=1,\dots, k$. We define the additively and multiplicatively weighted Voronoi cell for a site $\overline{p}(S_j)$ as
-\begin{equation}
-  Vor_{wgt}( p_j ) = \{ p \ | \ \nu_j \| p - p_j \|^2 + \sigma_j \leq \nu_l \| p - p_l \|^2 + \sigma_l \text{
-    for all $l \neq j$} \}
-  \label{def:wgt_vor}
-\end{equation}
-To avoid confusion with the convention of referring to additively weighted Voronoi diagrams as weighted Voronoi diagrams throughout this paper, we
-will use the slightly cumbersome name of additively and multiplicatively weight Voronoi diagrams to refer to the diagrams given by these cells. With
-this definition, we have the following result.
-
-\begin{theorem}
-  \label{thm:var_2}
-  Suppose $(S_1^\ast, \dots, S_k^\ast)$ is an optimal $k$-clustering for minimizing $\sum_{i=1}^k Var^2(S_i)$. Let $p_j^\ast$ be the associated
-  centroids for each cluster. Consider the additively and multiplicatively weighted Voronoi diagram obtained by using $\{ p_j^\ast \}$ as sites with
-  additive weights $\nu_j = |S_j^\ast|$ and multiplicative weights $\sigma_j = \sum_{p_i \in S_j^\ast} \| p_i - p_j^\ast \|^2$. Then $S_j^\ast =
-  S \cap Vor_{wgt}(p_j^\ast)$ for every $j$ \cite{inaba_clustering}.
-\end{theorem}
-
-The proof of Theorem \ref{thm:var_2} makes use of the fact that $Var^2(S_j)$ is the all-pairs sum of squared errors, that is
-\begin{equation}
-  Var^2(S_j) = \sum_{p_i, p_l \in S_j, i<l} \|p_i - p_l\|^2.
-  \label{eq:all_sums}
-\end{equation}
-Similar to the proof of this fact, it can be shown that for any point $p$,
-\begin{equation}
-  \sum_{p_i \in S_j} \| p_i - p \|^2 = |S_j| \|p - p_j^\ast\|^2 + \sum_{p_i \in S_j} \| p_i - p_j^\ast \|^2.
-  \label{eq:wgt_vor}
-\end{equation}
-Combining these two facts, a contradiction can be reached by assuming a point $p_i \in S_j$ but $p_i \not\in Vor_{wgt}(p_j^\ast)$ by showing that
-moving $p_i$ to $Vor_{wgt}(p_j^\ast)$ will decrease the weighted distance function used to create the additively and multiplicatively weighted Voronoi
-diagram.
-
-With Theorem \ref{thm:var_1} and Theorem \ref{thm:var_2}, a solution to these clustering problems can be found by finding all possible Voronoi
-partitions of $S$ using $k$ weighted points and then choosing the partition that minimizes the objective function.
 
 \printbibliography
 \end{document}
