@@ -135,7 +135,7 @@ is given by the line
   y = -\frac{q_x - p_x}{q_y - p_y} x + \frac{1}{2(q_y - p_y)} \left(q_x^2 + q_y^2 - p_x^2 - p_y^2 - r^2(q) + r^2(p) \right),
   \label{eq:pow_intersect}
 \end{equation}
-where $p = (p_x, p_y)$ and $q = (q_x, q_y)$. From this, it is apparent that the boundary between power cells is a straight line perpendicular to the
+where $p = (p_x, p_y)$ and $q = (q_x, q_y)$. From this, it is apparent that the boundary between power cells is a straight line or line segment perpendicular to the
 line that is perpendicular to the straight line through $p$ and $q$.
 
 Power diagrams and additively weighted Voronoi diagrams have various connections to other geometric objects and each other.
@@ -457,6 +457,16 @@ Most of the steps for computing the power diagram involve applying transformatio
 computing the convex hull, which can be done in $O(n \log n)$ time \cite{comp_geom}. Therefore, the above gives an algorithm for computing power
 diagrams in $O(n \log n)$ time.
 
+\subsubsection{Alternative Method}
+
+Power diagrams can be computed without the use of duality and convex hull algorithms. The divide-and-conquer algorithm used to compute Voronoi
+diagrams can also be used to compute power diagrams \cite{imai_power}. This algorithm splits the sites into two subsets, $S_1$ and $S_2$, and
+computes the power diagrams of the two halves. To
+merge them together, a dividing chain is found that has the edges between sites of $S_1$ and $S_2$. As in the case of Voronoi diagrams, the rays
+in this chain are the edges between sites on the convex hull of $S_1$ and $S_2$ and there are $O(n)$ finite line segments in the chain. This method
+is able to work because the edge between two power cells is perpendicular to the line between the associated sites. This algorithm has a computational
+complexity of $O(n \log n)$.
+
 \section{Applications of Weighted Voronoi Diagrams and Power Diagrams}
 
 \subsection{Point in Union of Balls}
@@ -515,12 +525,14 @@ diagrams and the following to detect intersections.
 
 By Lemma \ref{lem:ball_intersect}, we only need to check if any $b_i$ intersect the complement of their power cells \cite{aurenhammer_discs}. This can
 be done by checking if the center of $b_i$ is in its own power cell and checking each edge of the power cell for intersections with $b_i$.
+By tracking which circles are overlapping, this solution can be extended to find the connected components of $\cup (B)$ \cite{imai_power}.
 
 This solution requires computing the power diagram for the balls in $B$, which takes $O(n \log n)$ time. Each edge is checked for intersections with
 two power cells, and the center of each ball is only checked if it is contained in its own power cell. Because there are $O(n)$ edges, checking for
 edge intersections takes $O(n)$ total time. Because the power cells are convex, checking intersections of the centers of balls with their power cells
 takes $O(n \log n)$ total time. Therefore, this algorithm has a complexity of $O(n \log n)$. This is an improvement over the naive $O(n^2)$ method of
 checking each pair for intersections.
+
 
 \subsection{Clustering}
 
