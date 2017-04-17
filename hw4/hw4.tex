@@ -51,6 +51,12 @@
 \algnewcommand{\Or}{\textbf{ or }}
 \algnewcommand{\And}{\textbf{ or }}
 
+% Indent paragraphs and remove spacing between paragraphs in itemize and enumerate environments
+\setlist{
+  listparindent=\parindent,
+  parsep=0pt,
+}
+
 \begin{document}
 \maketitle
 
@@ -99,8 +105,9 @@
           defined by the points sorted by nondecreasing $y$-coordinate and is found between the left and right segments of the boundary of $P$ that
           intersect this slab. These conditions are exactly the conditions checked above.
 
-          This algorithm sorts points of $P$, giving a precomputing time of $O(n \log n)$. $A$ stores each of the $n$ vertices of $P$ exactly once,
-          and associates $O(1)$ edges to each adjacent pair in $A$. Therefore, the storage requirements are $O(n)$. Querying requires a binary search
+          This algorithm sorts points of $P$, giving a precomputing time of $O(n \log n)$. $A$ stores a pair of $y$-coordinates at each node
+          to allow a binary search into the tree, and stores the $O(1)$ edges per leaf that are necessary for the sidedness tests. Therefore, the
+          storage requirements are $O(n)$ because $A$ has $O(n)$ nodes. Querying requires a binary search
           on $A$ followed by a constant number of sidedness tests, giving a query time of $O(\log n)$.
 
         \item
@@ -113,13 +120,12 @@
           point $q$, we perform a binary search using the constant time angle comparison operator. This returns a pair of points $p_i$ and $p_{i+1}$
           such that $q$ is intersected by a ray from the origin as it sweeps clockwise between $p_i$ and $p_{i+1}$. Next, we determine if the segments
           $\overline{rq}$ and $\overline{p_i p_{i+1}}$ intersect. If they do, $q$ is outide $P$. If they don't, $q$ is inside $P$. In this radial
-          problem, we consider the array $A$ having wraparound at its ends so $p_1$ and $p_n$ are adjacent. If $q$ induces the same angle with the
-          positive $x$-axis as a vertex $p_i$ of $P$, $p_{i-1}$ or $p_{i+1}$ can be used as the second point defining the segment on the boundary of
-          $P$. The test for segment intersection could be replaced by a sidedness test, but the segment intersection is more indicative of what is
-          happening with the definition of star-shaped polygons.
+          problem, we consider the array $A$ having wraparound at its ends so $p_1$ and $p_n$ are adjacent. The test for segment intersection could be
+          replaced by a sidedness test.
 
-          The precomputing time is $O(n \log n)$ if the points needed to be placed in angular order. If they are already in order, no precomputing is
-          needed. The array $A$ stores only the vertices of $P$, so the storage required is $O(n)$. The query algorithm requires a binary search and a
+          The precomputing time is $O(n \log n)$ if the points needed to be sorted in angular order. If they are already in order, no precomputing is
+          needed except building the data structure. The array $A$ stores points at each node to accommodate the binary search and the intersection
+          query at the leaves. There are $O(n)$ nodes, so the storage cost is $O(n)$. The query algorithm requires a binary search and a
           single segment intersection test, so the query time is $O(\log n)$.
 
       \end{enumerate}
@@ -158,10 +164,10 @@
           This Voronoi edge is an edge of $V(p_i)$.
 
          \item
-           We need to be able to take $Vor(S)$ and ``remove'' edges that do not correspond to a nearest neighbor (we will not actually remove any
-           edges from the DCEL). To do this, we can walk along each face of the DCEL. Each face is associated to a site $p_i \in S$. Any nearest
+           We need to be able to take $Vor(S)$ and only report edges that correspond to nearest neighbors.
+           To do this, we can walk along each face of the DCEL. Each face is associated to a site $p_i \in S$. Any nearest
            neighbor to $p_i$ will share a Voronoi edge with $p_i$ by part (a). Because of this, we can walk along the edges bounding $V(p_i)$ and
-           compute the distance to the site associated to each edge. The sites that have the minimum distance will be the nearest neighbors for $p_i$.
+           compute the distance to the site associated to each half-edge's twin. The sites that have the minimum distance will be the nearest neighbors for $p_i$.
            By repeating this for all vertices, we get the nearest neighbors for every vertex in $S$.
 
            In this algorithm, we walk along each of the edges of the Voronoi diagram twice. At each edge, we do a constant amount of work. We know the
@@ -196,7 +202,7 @@
        \begin{enumerate}
          \item
            Take any edge $e$ in the Gabriel graph. Let $p$ and $q$ be the endpoints of $e$. Then the disc with diameter $pq$ does not contain any
-           other point of $P$. Therefore, there is an edge between $p$ and $q$ in the Voronoi diagram of $P$, which implies there is an edge between
+           other point of $P$. Therefore, there is a Voronoi edge between $p$ and $q$ in the Voronoi diagram of $P$, which implies there is a edge between
            $p$ and $q$ in the Delaunay graph. This holds for any edge in the Gabriel graph, so the Gabriel graph is contained in $DG(P)$.
 
          \item
