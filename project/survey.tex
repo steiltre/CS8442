@@ -21,6 +21,10 @@
 \usepackage{algpseudocode}
 \usepackage{bbm}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{subcaption}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[section]
@@ -131,7 +135,7 @@ Pythagorean theorem, we can see for any point $q \in \R^2$, $pow(q,p) = d^2(p,q)
 measured along a line tangent to $C(p)$.
 
 Using the above formulations, we may speak of weighted Voronoi diagrams and power diagrams by thinking of $S$ as
-containing a set of sites in $\R^2$ with associated weights, or we may refer to $S$ as a set of circles with radii given by the appropriate weights.
+containing a set of sites in $\R^2$ with associated weights, or we may refer to $S$ as a set of circles with with centers at $\{p_i\}$ and radii given by the appropriate weights.
 Whether we think of $S$ as sites with weights or circles in the plane, we will use $Vor_{add}(S)$ and $Vor_{pow}(S)$ to denote the
 associated diagrams, and similarly for $Vor_{add}(p)$ and $Vor_{pow}(p)$.
 
@@ -142,10 +146,10 @@ and faces in the diagrams \cite{aurenhammer_power} \cite{rosenberger_additive}.
 
 Unlike the straight-line boundaries of standard
 Voronoi diagrams, boundaries between regions in additively weighted Voronoi diagrams are hyperbolic arcs or straight line segments
-\cite{aurenhammer_additive}. This can be seen by noticing $d(x,p) - w(p) = d(x,q) - w(q)$ if and only if $d(x,p) - d(x,q) = w(p) - w(q)$, that is
+\cite{aurenhammer_additive}, as seen in Figure \ref{fig:wgt}. This can be seen by noticing $d(x,p) - w(p) = d(x,q) - w(q)$ if and only if $d(x,p) - d(x,q) = w(p) - w(q)$, that is
 points on $\partial_{pq}$ have the difference of distances between $p$ and $q$ equal to a constant, which defines a hyperbola.
 
-For power diagrams, boundaries are straight like in standard Voronoi diagrams. Let $p, q \in S$ be circles with radii $r(p), r(q)$ respectively. The set of $s = (x,y) \in \R^2$ where $pow(s,p) = pow(s,q)$
+For power diagrams, boundaries are straight like in standard Voronoi diagrams, as seen in Figure \ref{fig:pow}. Let $p, q \in S$ be circles with radii $r(p), r(q)$ respectively. The set of $s = (x,y) \in \R^2$ where $pow(s,p) = pow(s,q)$
 is given by the line
 \begin{equation*}
   y = -\frac{q_x - p_x}{q_y - p_y} x + \frac{1}{2(q_y - p_y)} \left(q_x^2 + q_y^2 - p_x^2 - p_y^2 - r^2(q) + r^2(p) \right),
@@ -154,7 +158,20 @@ is given by the line
 where $p = (p_x, p_y)$ and $q = (q_x, q_y)$ \cite{aurenhammer_power}. From this, it is apparent that the boundary between power cells is a straight line or line segment perpendicular to the
 line that is perpendicular to the straight line through $p$ and $q$.
 
-\textbf{INCLUDE EXAMPLES OF DIAGRAMS}
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[t]{0.45 \textwidth}
+    \includegraphics[height=2.25in]{power(aur_pow).png}
+    \caption{Example power diagram (from \cite{aurenhammer_power})}
+    \label{fig:pow}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.47\textwidth}
+    \includegraphics[height=2.25in]{weighted(aur_surv).png}
+    \caption{Example weighted Voronoi diagram (from \cite{aurenhammer_survey})}
+    \label{fig:wgt}
+  \end{subfigure}
+  \caption{}
+\end{figure}
 
 In the remainder of the paper, we will discuss connections between weighted Voronoi diagrams, power diagrams, and other geometric objects. After this,
 we will use some of these connections to investigate the diagram recognition problem which starts with a partitioning of the plane and seeks to decide if the diagram could be the
@@ -169,7 +186,7 @@ defined as the dual of these diagrams, but we will not discuss these here. Inste
 diagrams, power diagrams, and 3-dimensional objects.
 
 \subsection{Cone Arrangements}
-\label{cone}
+\label{sec:cone}
 For motivation, we will first consider a standard Voronoi diagram. Take a site $p \in S$. Define
 \[ C_p = \{ (x, y, d(p, (x,y)) \}. \]
 This defines a cone with vertex at $p$ in the $xy$-plane. Looking at the cones for all sites in $S$, we can see that $Vor(p)$ is the region in $\R^2$ corresponding to the height of $C_p$ being
@@ -225,23 +242,25 @@ We have the following relation between affinely transformable diagrams and power
 \end{theorem}
 
 As an example, all weighted Voronoi diagrams in $\R^2$ can be embedded in power diagrams in $\R^3$. We take $f(q,p) = d(q,p) - w(p)$ to be the
-distance function defining weighted Voronoi diagrams, and $F(x) = x$. In this case, $cone_F(p)$ is the cone described in Section \ref{cone} for $p \in
+distance function defining weighted Voronoi diagrams, and $F(x) = x$. In this case, $cone_F(p)$ is the cone described in Section \ref{sec:cone} for $p \in
 S$. As already noted, the boundaries between cells in weighted Voronoi diagrams are hyperbolic arcs. The intersections $cone_F(p) \cap cone_F(q)$
 are these arcs lifted back up to
 the cones, which will each be contained in a single plane in $\R^3$.
 
 By definition, we have that weighted Voronoi diagrams are affinely transformable by the above reasoning. By Theorem \ref{thm:affine}, weighted Voronoi
 diagrams can be embedded in power diagrams in $\R^3$. In fact, the corresponding power diagram is given by sites $T = \{ (p, w(p)) | p \in S \}$ and
-weights $\omega(p) = 2 w(p)^2$, where $S \subset \R^2$ and $w(p)$ are the sites and weights for the weighted Voronoi diagram. \textbf{CHECK THIS
-SECTION AND SEE IF A BETTER CONNECTION EXISTS}
+weights $\omega(p) = 2 w(p)^2$, where $S \subset \R^2$ and $w(p)$ are the sites and weights for the weighted Voronoi diagram
+\cite{aurenhammer_additive}. This embedding result states that for any weighted Voronoi diagram, there is a power diagram in $\R^3$ such that
+intersections of faces of the power diagram with the cones from Section \ref{sec:cone} can be projected into the plane $\{ z = 0 \}$ to give the faces
+cells of the weighted Voronoi diagram.
 
 \subsection{Convex Hulls}
 \label{sec:conv}
 
-There is an exact correspondence between power diagrams in $\R^2$ and lower convex hulls in $\R^3$. We will first show the correspondence between power diagrams and
+There is an equivalence between power diagrams in $\R^2$ and lower convex hulls in $\R^3$. We will first show the correspondence between power diagrams and
 upper envelopes and then use a correspondence between upper envelopes and lower convex hulls. To show this, we will modify the argument in
 \cite{comp_geom} to hold for power diagrams rather than standard Voronoi diagrams by using tools from \cite{aurenhammer_power}. As we will see later, this correspondence can be useful
-for algorithmically finding power diagrams \cite{aurenhammer_power}.
+for algorithmically finding power diagrams.
 
 First, we will need a few definitions. Let $U$ be the unit paraboloid in $\R^3$ defined as $U := (z = x^2 + y^2)$ for $(x,y) \in \R^2$.
 
@@ -252,11 +271,18 @@ $z$-coordinate above every point in the plane $\{ z = 0 \}$, that is,
 
 Consider a set of sites $S \subset \R^2$ with associated radii $\{r(p) \ | \ p \in S\}$. For $p \in S$, we define $\Pi(p)$ to be the plane given by
 \[ \Pi(p) : z = 2 p \cdot x - p^2 + r^2(p) ,\]
-where $p^2$ is used to denote $p \cdot p$. It can be shown that $\Pi$ is a bijection between spheres in $\R^2$ and nonvertical planes in $\R^3$ which
+where $p^2$ is used to denote $p \cdot p$. The action of $\Pi$ is illustrated in Figure \ref{fig:lift}. It can be shown that $\Pi$ is a bijection between spheres in $\R^2$ and nonvertical planes in $\R^3$ which
 intersect $U$. Intuitively, if we consider a site with $r(p) = 0$, then $\Pi(p)$ is tangent to $U$, fixing the normal vector to $\Pi(p)$. For $f(x) =
 x \cdot x$, $\nabla f(x) = 2x$, so a plane with any nonhorizontal normal vector can be found. Adding arbitrary constants shifts the obtained planes, to allow any
 nonvertical plane. In the definition of $\Pi(p)$, $r^2(p)$ is being added, which must be a positive number. This limits the only translations of
 tangent planes of $U$ to be such that an intersection with $U$ is maintained.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[height=3in]{lifting(aur_surv).png}
+  \caption{The lifting map $\Pi$}
+  \label{fig:lift}
+\end{figure}
 
 Now, we can begin to prove the correspondence between power diagrams and upper envelopes. First, we show the usefulness of the unit paraboloid $U$ in
 relation to the power function.
@@ -284,7 +310,7 @@ relation to the power function.
 Now we are able to prove the correspondence.
 
 \begin{theorem}
-  Let $H = \{ \Pi(p) | p \in S \}$. Then the projection of $\mathcal{UE}(H)$ on the plane $\{ z=0 \}$ is the power diagram of $S$.
+  Let $H = \{ \Pi(p) \ | \ p \in S \}$. Then the projection of $\mathcal{UE}(H)$ on the plane $\{ z=0 \}$ is the power diagram of $S$.
   \label{thm:ue_to_pow}
 \end{theorem}
 \begin{proof}
@@ -368,7 +394,7 @@ Combining the correspondence between power diagrams and upper envelopes given in
 \end{theorem}
 
 All of the results above were stated for power diagrams in $\R^2$ and upper envelopes and convex hulls in $\R^3$. It is easy to see these results can
-be extended to power diagrams in $\R^d$ and upper envelopes and convex hulls in $\R^{d+1}$.
+be extended to power diagrams in $\R^d$ and upper envelopes and convex hulls in $\R^{d+1}$ \cite{aurenhammer_power}.
 
 \section{Diagram Recognition}
 
@@ -385,7 +411,7 @@ partition to have sites such that the above orthogonality holds.
 Let $R = \{ R_1,\dots, R_n \}$ be a partition of the plane into convex regions with edges that are straight line segments and rays. Let $S = \{ p_1,
 \dots, p_n \}$ be a set of points with $p_i$ corresponding to $R_i$ for all $i$. Let
 \[ E = \{ (s_i, s_j) \ | \ R_i \text{ and } R_j \text{ are neighboring regions } \} . \]
-The graph $G = (S,E)$ is a \textit{reciprocal figure} for $R$ if every edge $(s_i, s_j) \in E$ is perpendicular to the edge between $R_i$ and $R_j$,
+The graph $G = (S,E)$ is a \textit{reciprocal figure} for $R$ if every edge $(s_i, s_j) \in E$ is perpendicular to $\partial_{R_i R_j}$,
 and if you follow the ray from $s_i$ through $s_j$, you end up on the same side of the edge between $R_i$ and $R_j$ as $R_j$.
 
 The last requirement is included to require cells to be convex, and edges intersecting at a vertex do so at an angle strictly less than $\pi$ radians.
@@ -405,33 +431,34 @@ As noted above, the existence of a reciprocal figure gives a set of sites to use
 weights to use. This can be proved by looking locally at a vertex of $R$ and showing the weights can be solved for locally. By walking over the edges
 of the reciprocal figure, we can successively find appropriate weights using the local result.
 
-The local result we give requires vertices of the reciprocal figure to have degree exactly 3. This restriction can be lifted, but proof of this fact
+The local result we give requires vertices of the original partition to have degree exactly 3. This restriction can be lifted, but proof of this fact
 will not be given (see \cite{ash-bolker}).
 
 \begin{lemma}
-  Let $R$ be a partition as above with three regions and a single vertex $v$. Let $p_1, p_2,$ and $p_3$ be vertices of a reciprocal figure of $R$. Then there exist weights
+  Let $R$ be a partition as above with three regions, $R_1, R_2$, and $R_3$, and a single vertex $v$. Let $p_1, p_2,$ and $p_3$ be vertices of a reciprocal figure of $R$. Then there exist weights
   $w_1, w_2, w_3$ such that $R$ is the power diagram associated to $S = \{ p_1, p_2, p_3 \}$.
   \label{lem:rec_loc}
 \end{lemma}
 
 \begin{proof}
-  The proof presented here follows the proof of Lemma 10 in \cite{ash-bolker} but is adapted to using upper envelopes as discussed previously.
+  The proof presented here follows the proof of Lemma 10 in \cite{ash-bolker} but is adapted to using upper envelopes as discussed in Section
+  \ref{sec:conv}.
 
   Initially, consider $w_1 = w_2 = w_3 = 0$. Then $\Pi(p_i)$ lifts $p_i$ to a plane tangent to the unit paraboloid $U$ as in Section \ref{sec:conv}.
-  $\Pi(p_1) \cap \Pi(p_2)$ is a line that is the perpendicular bisector of $\overline{p_1 p_2}$ when projected vertically into the plane. Adding weights to $p_1$
-  or $p_2$ maintains orthogonality while shifting the intersection of the projection of $\Pi(p_1) \cap \Pi(p_2)$ with $\overline{p_1 p_2}$. This
-  allows $w_1$ and $w_2$ to be found such that $\Pi(p_1) \cap \Pi(p_2)$ projects onto the boundary between $R_1$ and $R_2$. The solution $(w_1, w_2)$
+  $P(\Pi(p_1) \cap \Pi(p_2))$ is a line that is the perpendicular bisector of $\overline{p_1 p_2}$ where $P$ is the vertical projection. Adding weights to $p_1$
+  or $p_2$ maintains orthogonality while shifting the intersection of the $P(\Pi(p_1) \cap \Pi(p_2))$ with $\overline{p_1 p_2}$. This
+  allows $w_1$ and $w_2$ to be found such that $P(\Pi(p_1) \cap \Pi(p_2)) \supseteq \partial_{R_1 R_2}$. It is worth noting the solution $(w_1, w_2)$
   is not unique.
 
-  With $w_2$ now fixed, we can also find $w_3$ such that $\Pi(p_2) \cap \Pi(p_3)$ projects onto the boundary between $R_2$ and $R_3$. Now $w_1, w_2,$
-  and $w_3$ have been found. We must show $\Pi(p_1) \cap \Pi(p_3)$ projects onto the boundary between $R_1$ and $R_3$.
+  With $w_2$ now fixed, we can also find $w_3$ such that $P(\Pi(p_2) \cap \Pi(p_3)) \supseteq \partial_{R_2 R_3}$. Now $w_1, w_2,$
+  and $w_3$ have been found. We must show $P(\Pi(p_1) \cap \Pi(p_3)) \supseteq \partial_{R_1 R_3}$.
 
-  As before, the projection of $\Pi(p_1) \cap \Pi(p_3)$ is perpendicular to $\overline{p_1 p_3}$. Because $v \in \partial_{R_1 R_2} \cap \partial_{R_2
+  As before, $P(\Pi(p_1) \cap \Pi(p_3))$ is perpendicular to $\overline{p_1 p_3}$. Because $v \in \partial_{R_1 R_2} \cap \partial_{R_2
   R_3}$, $\tilde{v} \in \Pi(p_1) \cap \Pi(p_2) \cap \Pi(p_3)$ for some $\tilde{v}$ that projects onto $v$. Therefore, $\tilde{v} \in \Pi(p_1) \cap
-  \Pi(p_3)$, and the projection of $\Pi(p_1) \cap \Pi(p_3)$ coincides with $\partial_{R_1 R_3}$.
+  \Pi(p_3)$, and $v \in P(\Pi(p_1) \cap \Pi(p_3))$. Because $P(\Pi(p_1) \cap \Pi(p_3))$ is parallel to $\partial_{R_1 R_3}$ and they both contain $v$, $P(\Pi(p_1) \cap \Pi(p_3)) \supseteq \partial_{R_1 R_3}$.
 \end{proof}
 
-To prove Theorem \ref{thm:pow_rec}, we can take any initial point $p_i$ of the reciprocal figure. We can then walk along all edges of the reciprocal
+To prove Theorem \ref{thm:pow_rec}, we can take any initial vertex $p_i$ of the reciprocal figure. We can then walk along all edges of the reciprocal
 figure and successively find appropriate weights as we reach new vertices for the first time. By Lemma \ref{lem:rec_loc}, solving in this way leads to
 compatible weights at each step. After finishing, weights will be found for every site in the reciprocal figure $S$ such that the power diagram
 associated to $S$ is $R$.
@@ -468,54 +495,51 @@ doing this is to perform a transformation that maps a site to the bottom of its 
 they are formed and compute a transformed Voronoi diagram. After this transformed Voronoi diagram has been completed, the Voronoi diagram can be
 obtained by inverting the previous transformation considered \cite{fortune_sweepline}.
 
-\subsubsection{Algorithm Description}
 Another way of interpreting Fortune's algorithm is using a sweepline and a beach line. We will give an overview of this associated algorithm. Many
-details and proofs will not be covered, but they can be found in \cite{comp_geom}. The idea behind this approach is to use a
+details and proofs will not be covered, but they can be found in \cite{comp_geom}.
+
+\subsubsection{Algorithm Description}
+The idea behind this approach is to use a
 horizontal sweepline, $l$, that sweeps down the plane, while the beach line follows behind the sweepline and determines the boundary between the portion of the Voronoi diagram that cannot be
 changed by anything past $l$ and the region that can still change.
 
 To understand the structure of the beach line, we must understand what points in the plane will not be affected by any sites past $l$.
-Consider a single site $p_i$ and point $q$ above $l$. If $d(p,q) < d(q,l)$, where $d(q,l)$ is understood to be the distance between $q$ and its
+Consider a single site $p_i$ and point $q$ above $l$. If $d(p_i,q) < d(q,l)$, where $d(q,l)$ is understood to be the distance between $q$ and its
 orthogonal projection onto $l$, then
-no site not already reached by $l$ can be closer to $q$ than $p_i$. Similarly, if $d(p,q) > d(q,l)$, then a site just
-below the sweepline could be closer to $q$ than $p_i$. The boundary between these two regions is the set of points that are equidistant from $p_i$ and
-$l$. Therefore, this boundary is a parabola. Considering all sites at once, $q$ can only be changed by a site below $l$ if $d(p,q) > d(q,l)$ for all
+no site not already reached by $l$ can be closer to $q$ than $p_i$ is. Similarly, if $d(p_i,q) > d(q,l)$, then a site just
+below the sweepline could be closer to $q$ than $p_i$ is. The boundary between these two regions is the set of points that are equidistant from $p_i$ and
+$l$. Therefore, this boundary is a parabola.
+
+This gives a parabola for each site $p_i \in S$. Considering all sites at once, a point $q$ can only be changed by a site below $l$ if $d(p,q) > d(q,l)$ for all
 currently known sites $p$. Therefore, the beach line is given by the bottom of the parabolas obtained for each individual site.
 
 If we look at the intersection of two parabolic arcs on the beach line, these points will be equidistant from the sites associated to each parabolic
 arc and $l$. This means as the sweep line moves, the beach line changes behind it and traces out the edges of the Voronoi diagram. To compute the
-Voronoi diagram, we then need to understand how the beach line changes as new parabolic arcs form and old parabolic arcs are absorbed by the others.
+Voronoi diagram, we then need to understand how the beach line changes as new parabolic arcs form and old parabolic arcs disappear.
 
 Parabolic arcs can only be added when $l$ reaches a new site. At this point, a degenerate parabolic arc is added, which is just a vertical line
-extending from the new site to the beach line. As $l$ continues downward, this parabola will ``open up'' and contribute to the beach line. Parabolic
-arcs are removed from the beach line when they shrink down to a point. This can also be thought of as the two neighboring arcs expanding until the
-center arc is squeezed to a single point, call it $q$. Each of the three arcs described correspond to unique sites $p_i, p_j$, and $p_k$.
-\textbf{DESCRIBE THIS BETTER} At the point in time when the center parabolic arc has been squeezed to the single point $q$, $q$ is equidistant from
-$p_i, p_j$, and $p_k$. Also, by the definition of the parabolic arcs, $q$ is equidistant from $l$, and is in fact tangent to $l$. Therefore, $q$ is a
-vertex of the Voronoi diagram.
+extending from the new site to the beach line. As $l$ continues downward, this parabola will ``open up'' and contribute to the beach line.
+
+Consider a parabolic arc which is disappearing from the beach line. This can be viewed as its neighbors ``squeezing'' the arc to a single point. Each of the three arcs described correspond to unique sites $p_i, p_j$, and $p_k$.
+At the point in time when the center parabolic arc has been squeezed to the single point $q$, $q$ is equidistant from
+$p_i, p_j$, and $p_k$. Also, by the definition of the parabolic arcs, $q$ is equidistant from $l$. Therefore, $q$ is a
+vertex of the Voronoi diagram, and a circle centered at $q$ with $p_i, p_j$, and $p_k$ on its boundary contains no sites in its interior and lies
+tangent to $l$.
 
 From the above considerations, the only times the structure of the beach line changes are when $l$ reaches a new site and when a circle lying on top
 of $l$ has three sites contributing to the beach line on its boundary. Call these two events site events and circle events, respectively. At a site
-event, a new parabolic arc is added. If this parabolic arc splits a single arc in two, the two intersection points trace out the new Voronoi edge in
-both directions as $l$ continues downward. If the vertical line created when a new site is reached intersects two parabolic arcs of the beach line, we
-are in a site event which is also a circle event and will treat it as a circle event. At a circle event, multiple edges intersect in a vertex, and a
-new edge is traced out by the remaining parabolic arcs.
+event, a new parabolic arc is added which traces out Voronoi edges. At a circle event, a parabolic arc is removed, adding a vertex to the Voronoi
+diagram and changing the adjacency of arcs, which causes a different edge to be traced.
 
-These events are stored in an event queue, $Q$. Events are sorted by $y$-value. To store the structure of the beach line, a balanced binary search
-tree, $T$, is constructed with the parabolic arcs stored at the leaves. Each arc is also associated with the
-site it corresponds to. The internal nodes store the intersection points of the arcs of the beach line. To insert a new parabolic arc that is created
-when the sweepline crosses a site $p$, a binary search is performed on $T$ using $p_x$, the $x$-coordinate of $p$, to determine where to place the new
-parabolic arc. The intersection points stored at the nodes of $T$ are not directly stored because they depend on the position of the sweepline.
-Instead, they are calculated as the search is performed. Every leaf of $T$ stores a pointer to the circle event in $Q$ which will remove the
-associated arc from the beach line. If no such event exists or has not been calculated yet, this pointer is set to \texttt{nil}.
-
-The Voronoi diagram is stored in a DCEL structure as it is built. Internal nodes in $T$ contain pointers to one of the half-edges in the DCEL it is
-updating. After the Voronoi diagram has been constructed, a large bounding box is added to give a valid DCEL structure.
+With the structure of the beach line understood, data structures to store this information can be found. The site and circle events can be stored in an
+event queue. The parabolic arcs can be stored as leaves of a balanced binary search tree to allow arcs to be easily added and removed. As the
+algorithm proceeds, the Voronoi diagram can be placed in a DCEL structure. The implementation details of using these structures can be found in
+\cite{comp_geom}.
 
 \subsubsection{Interpretation Using Cone Arrangements}
 
 The beach line used in Fortune's algorithm can be seen as the boundary of regions where sites below the sweepline can affect the Voronoi diagram being
-computed. It also has a nice interpretation in terms of the cone arrangements previously mentioned that makes it clear how to generalize Fortune's
+computed. It also has a nice interpretation in terms of the cone arrangements of Section \ref{sec:cone} that makes it clear how to generalize Fortune's
 algorithm for computing additively weighted Voronoi diagrams.
 
 For Voronoi diagrams, the cone arrangements involve cones with their vertices at the sites in the $xy$-plane because a Voronoi diagram is an
@@ -523,7 +547,7 @@ additively weighted Voronoi diagram with all weights being zero. Consider the sw
 the $xy$-plane in a horizontal line. If this plane is given by the equation $z = y + t$, the plane is parallel to the boundary of the cones.
 Therefore, the intersection of the sweep plane with the $xy$-plane is the sweepline from
 Fortune's algorithm, where $t$ is the parameter used to make the plane sweep over $\R^3$. Also, the intersection of this plane with the cones of the
-cone arrangement are exactly the parabolic arcs which give the beach line from above when projected onto the $xy$-plane. For this reason, Fortune's algorithm can best be thought of as a sweep-plane
+cone arrangement are exactly the parabolic arcs which give the beach line from above when projected onto the $xy$-plane. For this reason, Fortune's algorithm can be thought of as a sweep-plane
 algorithm over the cone arrangement associated to sites. The Voronoi edges traced out by intersections of the parabolic arcs of the beach line are
 these parabolas on the cones intersecting to trace out the Voronoi edges of the lifted diagram.
 
@@ -532,9 +556,9 @@ From the cone arrangement interpretation, we can see that the appropriate algori
 now shifted up by the site's weight, $w(p)$ \cite{rosenberger_additive}. This can also be reinterpreted as a sweepline algorithm in the plane as
 above.
 
-Instead of sites located at points, we now consider site discs of radius $w(p_i)$ centered at site $p(i)$. Parabolas are added to the beach
-line when the sweep line reaches the bottom of a site's disc. This corresponds to when the sweep plane reaches the vertex of the associated cone. The
-parabola that is added has its focus at the site $p_i$, and its directrix begins touching the focus, just as in Fortune's algorithm, that is, the
+Instead of sites located at points, we now consider site discs of radius $w(p_i)$ centered at sites $p_i$. Parabolas are added to the beach
+line when the sweep line reaches the bottom of $p_i$'s disc. This corresponds to the sweep plane reaching the vertex of $p_i$'s cone. The
+parabola that is added has its focus at $p_i$, and its directrix begins touching the focus, just as in Fortune's algorithm, that is, the
 directrix for a given parabola lags behind the sweepline by a distance of $w(p_i)$. It is worth noting that in this situation, a parabola may be added
 when the associated site is already behind the beach line, creating a situation where a new Voronoi cell is not added.
 
@@ -546,13 +570,11 @@ parabolas. In this case, the center of the circumcircle is a vertex of the weigh
 The same priority queue, $Q$, balanced binary search tree, $T$, and DCEL structure can be used to store the events that change the beach line's
 structure, the tree that stores the structure of the beach line, and the weighted Voronoi diagram being constructed. The DCEL structure returned will
 not be exactly the weighted Voronoi diagram because the DCEL will only contain straight edges, whereas a weighted Voronoi diagram can have edges that
-are hyperbolic arcs. The DCEL returned will only contain connectivity information for the diagram. \textbf{CAN WE STORE EXTRA VALUES TO GIVE THE
-ACTUAL DIAGRAM??}
-
+are hyperbolic arcs. The DCEL returned will only contain connectivity information for the diagram.
 \subsubsection{Computational Complexity}
 
-At each event, the DCEL structure being stored can be updated in $O(1)$ time. $T$ and $Q$ can both be updated in $\log(n)$ time. Each site event corresponds to a site in $S$, giving a $O(n \log n)$ term from site events. Circle
-events are slightly more difficult to count, but there are $O(n)$ circle events \cite{comp_geom}. Combining the site and circle events gives a total
+At each event, the DCEL structure being stored can be updated in $O(1)$ time. $T$ and $Q$ can both be updated in $\log(n)$ time. There are $O(n)$ site
+events and circle events \cite{comp_geom}, giving a total
 computational complexity of $O(n \log n)$.
 
 \subsection{Computing Power Diagrams}
@@ -566,9 +588,9 @@ power diagrams to extract a power diagram \cite{aurenhammer_power} . This gives 
   \begin{algorithmic}[1]
     \Function{PowerDiagram}{S}
     \State Compute the hyperplanes $\Pi(S) = \{ \Pi(p) | p \in S \}$ and points $\Delta( \Pi(S) ) = \{ \Delta( \Pi(p) ) | p \in S \}$
-    \State Compute the convex hull $CH( \Delta( \Pi(S) ) )$.
-    \State Compute the upper envelope $UE( \Pi(S) )$ by applying $\Delta$ to all vertices, edges, and faces of $CH( \Delta( \Pi(S) ) )$.
-    \State Project all edges of $UE( \Pi(S) )$ onto $\R^2$ to obtain $PD(S)$.
+    \State Compute the convex hull $\mathcal{CH} ( \Delta( \Pi(S) ) )$.
+    \State Compute the upper envelope $\mathcal{UE} ( \Pi(S) )$ by applying $\Delta$ to all vertices, edges, and faces of $CH( \Delta( \Pi(S) ) )$.
+    \State Project all edges of $\mathcal{UE} ( \Pi(S) )$ onto $\R^2$ to obtain $PD(S)$.
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -577,7 +599,8 @@ power diagrams to extract a power diagram \cite{aurenhammer_power} . This gives 
 
 Most of the steps for computing the power diagram involve applying transformations to sets of size $O(n)$. The only step that takes more time is
 computing the convex hull, which can be done in $O(n \log n)$ time \cite{comp_geom}. Therefore, the above gives an algorithm for computing power
-diagrams in $O(n \log n)$ time.
+diagrams in $O(n \log n)$ time. The same basic algorithm can be used in higher dimensions, but the computational complexity with the complexity of
+computing convex hulls in higher dimensions.
 
 \subsubsection{Alternative Method}
 
@@ -591,10 +614,18 @@ complexity of $O(n \log n)$.
 
 \section{Applications of Weighted Voronoi Diagrams and Power Diagrams}
 
+Weighted Voronoi diagrams and power diagrams have been used to solve a wide variety of problems. Weighted Voronoi diagrams can model the
+growth of crystals that begin growing at different times. Multiplicatively weighted Voronoi diagrams model the growth of crystals that
+begin growing at the same time but grow at different rates \cite{aurenhammer_survey}. In biology, power diagrams and multiplicatively
+weighted Voronoi diagrams model the boundaries of cells in tissues \cite{cell}. A \textit{spider web} is a graph with forces applied to vertices along
+edges that is in static equilibrium, like a real spider web. These spider webs are equivalent to power diagrams \cite{spider}. In fluid simulations, power diagrams offer an effective and consistent
+method for reconstructing fluid interfaces within computational cells \cite{fluids}. In the following, we look more in-depth at a few applications of weighted Voronoi
+diagrams and power diagrams.
+
 \subsection{Point in Union of Balls}
 
 Let $B = \{b_1,\dots, b_n\}$ be a collection of open balls and $S = \{s_1, \dots, s_n\}$ be the circles bounding each of the balls in $B$. We would
-like to be able to efficiently determine if a query point $q$ lies in $\cup(B) = \cup_{i=1}^n b_i$. This query can be answered by using the power diagram
+like to be able to efficiently determine if a query point $q$ lies in $\cup(B) := \cup_{i=1}^n b_i$. This query can be answered by using the power diagram
 built on the circles of $S$ \cite{aurenhammer_discs}. The main necessary result is the following.
 
 \begin{lemma}
@@ -618,15 +649,18 @@ With this result, answering the query problem can be reduced to determining whet
 solving a planar point location problem on the power diagram of $S$ with $q$ as the query point. This will return a single region with an associated
 circle $s_i$. By Lemma \ref{lem:pow_query}, $x \in \cup B$ if and only if $x \in b_i$ for this particular value of $i$.
 
-The time necessary to perform this query is dominated by the planar point location problem involved, which is $O(\log n)$. After this, a single
+After precomputing the power diagram, the time necessary to perform this query is dominated by the planar point location problem involved, which is $O(\log n)$. After this, a single
 intersection test is performed on the necessary circle. This reduces the query time of the naive method of querying each ball in $B$, which has a
 computational complexity of $O(n)$.
 
 It is worth noting that this algorithm answers the decision problem. This exact method will not be able to return the entire set of $b_i$ that $q$
 intersects. The planar point location only returns a single circle in $S$ to check against. This can be overcome with methods of colored intersection
-searching \cite{ravi}. This is accomplished by considering each circle in $S$ to have a unique color. Each power diagram has size $O(n)$, and we have
-an algorithm for solving the decision problem in $O(\log n)$ time. By Theorem 1.8 in \cite{ravi}, we can output the results of the associated reporting problem using $O(n
-\log n)$ space in $O(\log n +k \log^2 n)$ time, where $k$ is the number of reported balls of $B$.
+searching \cite{ravi}.
+
+Consider each circle in $S$ to have a unique color. Every power diagram built on subsets of $B$ has size $O(n)$, and we have
+an algorithm for solving the decision problem in $O(\log n)$ time. By Theorem 3.1 in \cite{ravi}, we can output the results of the associated reporting problem using $O(n
+\log n)$ space in $O(\log n +k \log^2 n)$ time, where $k$ is the number of reported balls of $B$. This result is given as an example in Theorem 3.2 of
+\cite{ravi}.
 
 \subsection{Detecting Intersection of Spheres}
 
@@ -658,8 +692,10 @@ checking each pair for intersections.
 
 \subsection{Clustering}
 
-For a set $S$ of $n$ points, $k$-clustering seeks to partition $S$ into $k$ nonempty subsets, or clusters, $S_1, \dots, S_k$ which minimizes some objective
-function. When certain objective functions are used, optimal clusterings can be expressed in terms of Voronoi diagrams. For a cluster $S_i$ and a
+For a set of $n$ points, $S = \{p_1, \dots, p_n \}$, $k$-clustering seeks to partition $S$ into $k$ nonempty subsets, or clusters, $S_1, \dots, S_k$ which minimizes some objective
+function. When certain objective functions are used, optimal clusterings can be expressed in terms of Voronoi diagrams.
+
+For a cluster $S_i$ and a
 parameter $\alpha$, define
 the variance of $S_i$ as
 \begin{equation}
@@ -676,7 +712,7 @@ for $\alpha = 1,2$.
 Consider the case of $\alpha = 1$. The clustering problem is then seeking to minimize the sum of squared distances from points of $S$ to the
 associated centroids. If we know the centroids associated to each cluster, this becomes a matter of associating each point of $S$ to the nearest
 centroid, which is the same as drawing the standard Voronoi diagram for the centroids and determining the Voronoi cell each point of $S$ belongs to.
-This results in the following
+This results in the following.
 
 \begin{theorem}
   \label{thm:var_1}
@@ -687,14 +723,14 @@ This results in the following
 
 A similar theorem holds when minimizing $\sum_{i=1}^k Var^2(S_i)$, but now a Voronoi diagram that is weighted additively and multiplicatively must be
 considered. For this result, we will consider sites $\{ p_j \}$ with multiplicative weights $\nu_j$ and additive
-weights $\sigma_j$ for $j=1,\dots, k$. We define the additively and multiplicatively weighted Voronoi cell for a site $\overline{p}(S_j)$ as
+weights $\sigma_j$ for $j=1,\dots, k$. We define the additively and multiplicatively weighted Voronoi cell for a site $p_j$ as
 \begin{equation}
   Vor_{wgt}( p_j ) = \{ p \ | \ \nu_j \| p - p_j \|^2 + \sigma_j \leq \nu_l \| p - p_l \|^2 + \sigma_l \text{
     for all $l \neq j$} \}
   \label{def:wgt_vor}
 \end{equation}
 To avoid confusion with the convention of referring to additively weighted Voronoi diagrams as weighted Voronoi diagrams throughout this paper, we
-will use the slightly cumbersome name of additively and multiplicatively weight Voronoi diagrams to refer to the diagrams given by these cells. With
+will use the slightly cumbersome name of additively and multiplicatively weighted Voronoi diagrams to refer to the diagrams given by these cells. With
 this definition, we have the following result.
 
 \begin{theorem}
@@ -721,6 +757,34 @@ diagram.
 
 With Theorem \ref{thm:var_1} and Theorem \ref{thm:var_2}, a solution to these clustering problems can be found by finding all possible Voronoi
 partitions of $S$ using $k$ weighted points and then choosing the partition that minimizes the objective function.
+
+\section{Conclusion}
+
+Voronoi diagrams can be generalized in many ways. One method of generalizing is weighting the distance function used to determine Voronoi cells. By
+doing so, additively weighted Voronoi diagrams and power diagrams can be obtained.
+
+These diagrams share many similarities and some differences with standard Voronoi diagrams. For a diagram built on $n$ vertices, all of these diagrams
+have a number of edges and faces that are $O(n)$. Power diagrams have edges that are straight lines and line segments. Additively weighted Voronoi
+diagrams, on the other hand, have edges that are hyperbolic arcs.
+
+Weighted Voronoi diagrams and power diagrams have many relations to other geometric objects and each other. Weighted Voronoi diagrams can be thought
+of as arrangements of cones in $\R^3$. Weighted Voronoi diagrams can be obtained
+by intersecting the faces of certain power diagrams in $\R^3$ with these cones and projecting back into $\R^2$. Power diagrams correspond to upper
+envelopes of sets of planes, and through duality, also correspond to lower convex hulls in $\R^3$.
+
+Recognition problems take a diagram as given and determine if it could arise as a weighted Voronoi diagram or power diagram. The general answer to
+these questions requires knowledge of appropriate sites existing. With this assumption, it can be shown that appropriate weights can always be found
+to construct a weighted Voronoi diagram or power diagram that coincides with the given diagram.
+
+Using the geometric connections, we can modify algorithms for computing Voronoi diagrams to the case of weighted Voronoi diagrams and power
+diagrams. By thinking of Fortune's algorithm as a sweep-plane algorithm over arrangements of cones, we can computer weighted Voronoi diagrams. Power
+diagrams can be computed using convex hull algorithms because of the correspondence noted above. The divide-and-conquer algorithm for Voronoi diagrams
+can also be used to compute power diagrams.
+
+Weighted Voronoi diagrams and power diagrams have applications in a wide variety of fields. They have been used in modeling cell boundaries and
+determining interfaces in fluid simulations. Power diagrams are used to solve querying and intersection problems involving discs. Weighted Voronoi
+diagrams can give optimal clusterings when certain objective functions are used. These diagrams have been studied very extensively, but new
+applications continue to be found today.
 
 \printbibliography
 \end{document}
