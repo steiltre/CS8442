@@ -83,7 +83,7 @@ Voronoi diagram.
 Many other variations of Voronoi diagrams can be constructed through the use of weighted distance functions. Let $w: S \to \R^+$ be a function that defines
 the weight of sites in $S$. The multiplicatively weighted Voronoi diagram partitions the plane into cells defined by
 \begin{equation*}
-  Vor_{mul}(p) = \left\{ q \in \R^2 \ \big| \ \frac{d(p,q)}{w(p)} < \frac{d(p',q)}{w(p')} \text{ for all } p' \neq p \in S \right\}.
+  Vor_{mul}(p) = \left\{ q \in \R^2 \ \bigg| \ \frac{d(p,q)}{w(p)} < \frac{d(p',q)}{w(p')} \text{ for all } p' \neq p \in S \right\}.
 \end{equation*}
 These diagrams tend to be more difficult to study and are qualitatively very different from standard Voronoi diagrams. For example,
 the boundaries between regions in multiplicatively weighted Voronoi diagrams form circular arcs \cite{ash-bolker}, and multiplicatively weighted Voronoi
@@ -215,12 +215,13 @@ if $w(p') - w(p) > d(p,p')$ for some $p' \in S$.
 
 \subsection{Weighted Voronoi Diagrams and Power Diagrams}
 
-Weighted Voronoi diagrams can be relateed to power diagrams through an embedding of weighted Voronoi diagrams in $\R^2$ into power diagrams in $\R^3$.
+Weighted Voronoi diagrams can be related to power diagrams through an embedding of weighted Voronoi diagrams in $\R^2$ into power diagrams in $\R^3$.
 This embedding process applies more generally and requires a few definitions.
 
-To begin with, we will state the result for general distance functions. Take $S \subset \R^2$ to be our sites. Any function $f: \R^2 \times S \to \R$
+To begin with, we will state the result for general distance functions. In this section, we use the term generalized Voronoi diagram to refer to a
+Voronoi diagram constructed with a general distance function. Take $S \subset \R^2$ to be our sites. Any function $f: \R^2 \times S \to \R$
 can be considered as a distance function that allows us to measure the distance between points in the plane and any of the sites. Using this distance
-function, we can construct a Voronoi diagram, $Vor(S,f)$.
+function, we can construct a generalized Voronoi diagram, $Vor(S,f)$.
 
 Let $F: \R \to \R$ be a strictly increasing function. For $p,q \in S \subset \R^2$, we define
 \[ cone_F(p) = \{ (x,y,z) | (x,y) \in \R^2, z = F( f( (x,y), p) ) \}. \]
@@ -228,16 +229,16 @@ Let $F: \R \to \R$ be a strictly increasing function. For $p,q \in S \subset \R^
 We call a diagram \textit{affinely transformable} if there is a function $F$ as above such that $cone_F(p) \cap cone_F(q)$ is contained in a plane in $\R^3$ for any distinct
 $p,q \in S$.
 
-Let $V$ be a Voronoi diagram in $\R^3$. We say the 2-dimensional Voronoi diagram $V(S,f)$ can be \textit{embedded} in $V$ if for some $F$ as above,
-there is a cell $C$ of $V$ for each $p \in S$ such that $P( C \cap cone_F(p)) = Vor(p)$, where $P$ is the orthogonal projection onto the plane $\{ z =
-0 \}$ and we have used $Vor(p)$ to mean the region defined
-by the distance function $f$, not necessarily a region defined for a standard Voronoi diagram.
+Let $V$ be a generalized Voronoi diagram in $\R^3$. We say the 2-dimensional generalized Voronoi diagram $V(S,f)$ can be \textit{embedded} in $V$ if for some $F$ as above,
+there is a cell $C$ of $V$ for each $p \in S$ such that $P( C \cap cone_F(p)) = Vor_{gen}(p)$, where $P$ is the orthogonal projection onto the plane $\{ z =
+0 \}$ and $Vor_{gen}(p)$ is the generalized Voronoi cell defined
+by the distance function $f$.
 
 We have the following relation between affinely transformable diagrams and power diagrams:
 
 \begin{theorem}
   \label{thm:affine}
-  A Voronoi diagram $V(S,f)$ in $\R^2$ is affinely transformable if and only if it can be embedded into a power diagram in $\R^3$
+  A generalized Voronoi diagram $V(S,f)$ in $\R^2$ is affinely transformable if and only if it can be embedded into a power diagram in $\R^3$
   \cite{aurenhammer_additive}.
 \end{theorem}
 
@@ -248,17 +249,17 @@ are these arcs lifted back up to
 the cones, which will each be contained in a single plane in $\R^3$.
 
 By definition, we have that weighted Voronoi diagrams are affinely transformable by the above reasoning. By Theorem \ref{thm:affine}, weighted Voronoi
-diagrams can be embedded in power diagrams in $\R^3$. In fact, the corresponding power diagram is given by sites $T = \{ (p, w(p)) | p \in S \}$ and
+diagrams can be embedded in power diagrams in $\R^3$. In fact, the corresponding power diagram is given by sites $T = \{ (p, w(p)) \ | \ p \in S \}$ and
 weights $\omega(p) = 2 w(p)^2$, where $S \subset \R^2$ and $w(p)$ are the sites and weights for the weighted Voronoi diagram
 \cite{aurenhammer_additive}. This embedding result states that for any weighted Voronoi diagram, there is a power diagram in $\R^3$ such that
-intersections of faces of the power diagram with the cones from Section \ref{sec:cone} can be projected into the plane $\{ z = 0 \}$ to give the faces
+intersections of faces of the power diagram with the cones from Section \ref{sec:cone} can be projected into the plane $\{ z = 0 \}$ to give the
 cells of the weighted Voronoi diagram.
 
 \subsection{Convex Hulls}
 \label{sec:conv}
 
 There is an equivalence between power diagrams in $\R^2$ and lower convex hulls in $\R^3$. We will first show the correspondence between power diagrams and
-upper envelopes and then use a correspondence between upper envelopes and lower convex hulls. To show this, we will modify the argument in
+upper envelopes and then use a the duality between upper envelopes and lower convex hulls. To show this, we will modify the argument in
 \cite{comp_geom} to hold for power diagrams rather than standard Voronoi diagrams by using tools from \cite{aurenhammer_power}. As we will see later, this correspondence can be useful
 for algorithmically finding power diagrams.
 
@@ -267,7 +268,7 @@ First, we will need a few definitions. Let $U$ be the unit paraboloid in $\R^3$ 
 Let $H$ be a finite set of nonvertical planes in $\R^3$. Considering the height of a plane as a function of coordinates in the $xy$-plane, we denote points
 on the plane $h \in H$ as $(x,y,h(x,y))$. We define the \textit{upper envelope} of $H$ to be the object obtained by taking the plane with highest
 $z$-coordinate above every point in the plane $\{ z = 0 \}$, that is,
-\[ \mathcal{UE}(H) = \{ (x,y,z) | (x,y) \in \R^2, \ z = \max_{h \in H} h(x,y) \} .\]
+\[ \mathcal{UE}(H) = \{ (x,y,z) \ | \ (x,y) \in \R^2, \ z = \max_{h \in H} h(x,y) \} .\]
 
 Consider a set of sites $S \subset \R^2$ with associated radii $\{r(p) \ | \ p \in S\}$. For $p \in S$, we define $\Pi(p)$ to be the plane given by
 \[ \Pi(p) : z = 2 p \cdot x - p^2 + r^2(p) ,\]
@@ -275,12 +276,12 @@ where $p^2$ is used to denote $p \cdot p$. The action of $\Pi$ is illustrated in
 intersect $U$. Intuitively, if we consider a site with $r(p) = 0$, then $\Pi(p)$ is tangent to $U$, fixing the normal vector to $\Pi(p)$. For $f(x) =
 x \cdot x$, $\nabla f(x) = 2x$, so a plane with any nonhorizontal normal vector can be found. Adding arbitrary constants shifts the obtained planes, to allow any
 nonvertical plane. In the definition of $\Pi(p)$, $r^2(p)$ is being added, which must be a positive number. This limits the only translations of
-tangent planes of $U$ to be such that an intersection with $U$ is maintained.
+tangent planes of $U$ to be such that an intersection with $U$ is maintained. This restriction can be lifted by allowing negative values to be added.
 
 \begin{figure}[h]
   \centering
   \includegraphics[height=3in]{lifting(aur_surv).png}
-  \caption{The lifting map $\Pi$}
+  \caption{The lifting map $\Pi$ (from \cite{aurenhammer_survey})}
   \label{fig:lift}
 \end{figure}
 
@@ -332,7 +333,7 @@ Now we are able to prove the correspondence.
 Let $H = \{ h_1,\dots, h_n \}$ be a set of planes in $\R^2$ that intersect $U$. Because $\Pi$ is a bijection, we can find a circle centered at $p_i$
 with radius $r_i$ such that $\Pi( p_i ) = h_i$. Then $H = \{ \Pi(p_i) \}$, and by Theorem \ref{thm:ue_to_pow}, the projection of $\mathcal{UE}(H)$ gives the
 power diagram of the set of circles $S = \{ p_i \}$. By Lemma \ref{lem:proj}, a point $(x,y,z) \in h_i$ is part of $\mathcal{UE}(H)$ if and only if $(x,y) \in
-Vor_{pow}(p_i)$. Combining this with Theorem \ref{thm:ue_to_pow}, we know the cells of a power diagram can be encoded in an upper envelope and the
+Vor_{pow}(p_i)$. Thus we know the cells of a power diagram can be encoded in an upper envelope, and the
 faces of an upper envelope can be given by a power diagram. We notice that in retrieving the faces of an upper envelope from a power diagram, the
 power diagram on its own gives no information about the height of the upper envelope. This flexibility in being able to vertically shift upper
 envelopes corresponds to a power diagram remaining unchanged when adding a constant to the radii of all circles.
@@ -410,14 +411,13 @@ partition to have sites such that the above orthogonality holds.
 
 Let $R = \{ R_1,\dots, R_n \}$ be a partition of the plane into convex regions with edges that are straight line segments and rays. Let $S = \{ p_1,
 \dots, p_n \}$ be a set of points with $p_i$ corresponding to $R_i$ for all $i$. Let
-\[ E = \{ (s_i, s_j) \ | \ R_i \text{ and } R_j \text{ are neighboring regions } \} . \]
-The graph $G = (S,E)$ is a \textit{reciprocal figure} for $R$ if every edge $(s_i, s_j) \in E$ is perpendicular to $\partial_{R_i R_j}$,
+\[ E = \{ (p_i, p_j) \ | \ R_i \text{ and } R_j \text{ are neighboring regions } \} . \]
+The graph $G = (S,E)$ is a \textit{reciprocal figure} for $R$ if every edge $(p_i, p_j) \in E$ is perpendicular to $\partial_{R_i R_j}$,
 and if you follow the ray from $s_i$ through $s_j$, you end up on the same side of the edge between $R_i$ and $R_j$ as $R_j$.
 
 The last requirement is included to require cells to be convex, and edges intersecting at a vertex do so at an angle strictly less than $\pi$ radians.
 The important requirement is pertaining to the orthogonality of line segments. It asserts the existence of a set of potential sites that satisfy the
-orthogonality between edges and lines containing sites that all power diagrams exhibit. This can also be seen as requiring the existence of a dual
-graph of $R$ satisfying the orthogonality constraint.
+orthogonality between edges and lines containing sites that all power diagrams exhibit.
 
 With the above definition, we get the following result.
 
@@ -478,18 +478,18 @@ partition with boundaries given by hyperbolic arcs to be a weighted Voronoi diag
 \end{theorem}
 
 As in power diagram recognition, this result states that if a set of potential sites exists, then weights can be found such that the weighted Voronoi
-diagram corresponding to the sites and weights exactly coincides with the partition $R$. This result can be proved for more general partitions through
-the use of cohomology.
+diagram corresponding to the sites and weights exactly coincides with the partition $R$. This result can be proven for more general partitions through
+the use of cohomology \cite{ash-bolker}.
 
 \section{Algorithms}
 
-\subsection{Fortune's Sweepline Algorithm}
+\subsection{Fortune's Sweepline Algorithm for Computing Weighted Voronoi Diagrams}
 
 We begin with a description of Fortune's algorithm for computing Voronoi diagrams. Following this, we will give interpretations of this algorithm in
 terms of cone arrangements. From here we will describe the changes necessary to adapt Fortune's algorithm to computing an additively weighted Voronoi
 diagram.
 
-The obvious obstacle with developing a sweepline algorithm for computing Voronoi diagrams is that sites will be reached by a sweepline in the middle
+The obvious obstacle with developing a sweepline algorithm for computing Voronoi diagrams is that a site will be reached by a sweepline in the middle
 of its Voronoi cell. Therefore, the algorithm must have some way of identifying the creation of a new cell before it has reached a site. One method of
 doing this is to perform a transformation that maps a site to the bottom of its Voronoi cell. A sweepline algorithm could then identify new cells as
 they are formed and compute a transformed Voronoi diagram. After this transformed Voronoi diagram has been completed, the Voronoi diagram can be
@@ -587,7 +587,7 @@ power diagrams to extract a power diagram \cite{aurenhammer_power} . This gives 
 \begin{algorithm}
   \begin{algorithmic}[1]
     \Function{PowerDiagram}{S}
-    \State Compute the hyperplanes $\Pi(S) = \{ \Pi(p) | p \in S \}$ and points $\Delta( \Pi(S) ) = \{ \Delta( \Pi(p) ) | p \in S \}$
+    \State Compute the hyperplanes $\Pi(S) = \{ \Pi(p) \ | \ p \in S \}$ and points $\Delta( \Pi(S) ) = \{ \Delta( \Pi(p) ) \ | \ p \in S \}$
     \State Compute the convex hull $\mathcal{CH} ( \Delta( \Pi(S) ) )$.
     \State Compute the upper envelope $\mathcal{UE} ( \Pi(S) )$ by applying $\Delta$ to all vertices, edges, and faces of $CH( \Delta( \Pi(S) ) )$.
     \State Project all edges of $\mathcal{UE} ( \Pi(S) )$ onto $\R^2$ to obtain $PD(S)$.
@@ -599,7 +599,7 @@ power diagrams to extract a power diagram \cite{aurenhammer_power} . This gives 
 
 Most of the steps for computing the power diagram involve applying transformations to sets of size $O(n)$. The only step that takes more time is
 computing the convex hull, which can be done in $O(n \log n)$ time \cite{comp_geom}. Therefore, the above gives an algorithm for computing power
-diagrams in $O(n \log n)$ time. The same basic algorithm can be used in higher dimensions, but the computational complexity with the complexity of
+diagrams in $O(n \log n)$ time. The same basic algorithm can be used in higher dimensions, but the computational complexity increases with the complexity of
 computing convex hulls in higher dimensions.
 
 \subsubsection{Alternative Method}
@@ -704,7 +704,7 @@ the variance of $S_i$ as
 \end{equation}
 where $\| \cdot \|$ denotes the Euclidean norm and $\overline{p}(S_i)$ is the centroid of $S_i$. The minimization we will consider is
 \begin{equation}
-  \min \left\{ \sum_{i=1}^k Var^\alpha (S_i) | (S_1,\dots, S_k) \text{ is a $k$-clustering of } S \right\}
+  \min \left\{ \sum_{i=1}^k Var^\alpha (S_i) \ | \ (S_1,\dots, S_k) \text{ is a $k$-clustering of } S \right\}
   \label{eq:cluster}
 \end{equation}
 for $\alpha = 1,2$.
@@ -777,7 +777,7 @@ these questions requires knowledge of appropriate sites existing. With this assu
 to construct a weighted Voronoi diagram or power diagram that coincides with the given diagram.
 
 Using the geometric connections, we can modify algorithms for computing Voronoi diagrams to the case of weighted Voronoi diagrams and power
-diagrams. By thinking of Fortune's algorithm as a sweep-plane algorithm over arrangements of cones, we can computer weighted Voronoi diagrams. Power
+diagrams. By thinking of Fortune's algorithm as a sweep-plane algorithm over arrangements of cones, we can compute weighted Voronoi diagrams. Power
 diagrams can be computed using convex hull algorithms because of the correspondence noted above. The divide-and-conquer algorithm for Voronoi diagrams
 can also be used to compute power diagrams.
 
