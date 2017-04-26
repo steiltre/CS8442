@@ -241,6 +241,11 @@
   $Vor_{pow}(p)$ corresponds to the region of the plane $\{ z = 0 \}$ where the height of $cone_p$ is lower than $cone_q$ for all $q \neq p \in S$
   \cite{rosenberger_additive}
 
+  \begin{figure}
+    \includegraphics[width=2in]{cone.png}
+    \caption{1D cone arrangement for unweighted Voronoi diagram (from \cite{rosenberger_additive})}
+  \end{figure}
+
 \end{frame}
 
 \begin{frame}
@@ -277,68 +282,10 @@
     \item by duality this correspondence extends to lower convex hulls \cite{aurenhammer_power}
   \end{itemize}
 
-\end{frame}
-
-\begin{frame}
-  \frametitle{Recognition Problems}
-
-  When is a given diagram a power diagram or weighted Voronoi diagram?
-
-  \vspace{1cm}
-
-  Answer: If we know a ``reasonable'' set of sites exists and the edges are the right shape, we can find weights to fit the given diagram.
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Power Diagram Recognition}
-
-  Power diagram observations:
-  \begin{enumerate}
-    \item Power cells are convex
-    \item Edges are straight and meet at vertices at angles strictly less than $\pi$ radians
-    \item Edges are perpendicular to lines between sites
-  \end{enumerate}
-
-  If a given diagram satisfies 1 and 2 and a set of sites exists such that 3 is true, then weights can be found such that the power diagram matches
-  the given diagram \cite{ash-bolker}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Power Diagram Recognition Proof Sketch}
-
-  Idea: Look locally at a single vertex and patch together the larger diagram.
-
-  \begin{enumerate}
-    \item For a diagram with 3 edges that meet in a single vertex, show weights can be found that are consistent.
-    \item On more complicated diagram, walk along edges and solve for weights as you go. By local result, weights will be compatible at every step.
-  \end{enumerate}
-
   \begin{figure}
-    \begin{tikzpicture}
-      \filldraw[dashed] (0,0) circle (2pt) -- (2,2) circle (2pt) -- (3,-1) circle (2pt) -- (0,0);
-
-      \draw (5/2, -1/2) -- (8/2, 0/2);
-      \draw (5/2, -1/2) -- (4/2, -4/2);
-      \draw (5/2, -1/2) -- (-1/2, 5/2);
-    \end{tikzpicture}
-    \caption{With appropriate sites, consistent weights can be found}
+    \includegraphics[width=2in]{lifting(aur_surv).png}
+    \caption{Lifting map (from \cite{aurenhammer_survey})}
   \end{figure}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Weighted Voronoi Diagram Recognition}
-
-  Weighted Voronoi diagram observations:
-  \begin{enumerate}
-    \item Edges are hyperbolic arcs
-    \item All hyperbolas bounding a cell have a common focus (the site for the cell)
-  \end{enumerate}
-
-  If a diagram is given such that 1 is true and sites can be found to satisfy 2, the diagram coincides with a weighted Voronoi diagram
-  \cite{ash-bolker}
 
 \end{frame}
 
@@ -402,7 +349,7 @@
 \begin{frame}
   \frametitle{Union of Balls Stabbing Query}
 
-  Does a point $q$ lie in $\cup_i b_i$?
+  Does a query point $q$ lie in $\cup_i b_i$?
 
   By lemma, if and only if $q \in Vor_{pow}(p_i) \cap b_i$ for some $i$.
 
@@ -460,7 +407,7 @@
   \begin{itemize}
     \item Cell boundaries in tissues \cite{cell}
     \item Material interfaces in fluid simulations \cite{fluids}
-    \item Constrained clustering used to redistribute farmland in Germany \cite{brieden_clustering} \cite{brieden_farmland}
+    \item Constrained clustering used to redistribute farmland in Germany \cite{brieden_farmland} \cite{brieden_clustering}
   \end{itemize}
 
   \begin{figure}
@@ -468,6 +415,71 @@
     \includegraphics[width=1.5in]{farm2.png}
     \caption{Farmland redistribution (from \cite{brieden_farmland})}
   \end{figure}
+
+\end{frame}
+
+\section{Recognition Problem}
+
+\begin{frame}
+  \frametitle{Recognition Problems}
+
+  When is a given diagram a power diagram or weighted Voronoi diagram?
+
+  \vspace{1cm}
+
+  Answer: If we know a ``reasonable'' set of sites exists and the edges are the right shape, we can find weights to fit the given diagram.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Power Diagram Recognition}
+
+  Power diagram observations:
+  \begin{enumerate}
+    \item Power cells are convex
+    \item Edges are straight and meet at vertices at angles strictly less than $\pi$ radians
+    \item Edges are perpendicular to lines between sites
+  \end{enumerate}
+
+  If a given diagram satisfies 1 and 2 and a set of sites exists such that 3 is true, then weights can be found such that the power diagram matches
+  the given diagram \cite{ash-bolker}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Power Diagram Recognition Proof Sketch}
+
+  Idea: Look locally at a single vertex and patch together the larger diagram.
+
+  \begin{enumerate}
+    \item For a diagram with 3 edges that meet in a single vertex, show weights can be found that are consistent.
+    \item On more complicated diagram, walk along edges and solve for weights as you go. By local result, weights will be compatible at every step.
+  \end{enumerate}
+
+  \begin{figure}
+    \begin{tikzpicture}
+      \filldraw[dashed] (0,0) circle (2pt) -- (2,2) circle (2pt) -- (3,-1) circle (2pt) -- (0,0);
+
+      \draw (5/2, -1/2) -- (8/2, 0/2);
+      \draw (5/2, -1/2) -- (4/2, -4/2);
+      \draw (5/2, -1/2) -- (-1/2, 5/2);
+    \end{tikzpicture}
+    \caption{With appropriate sites, consistent weights can be found}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Weighted Voronoi Diagram Recognition}
+
+  Weighted Voronoi diagram observations:
+  \begin{enumerate}
+    \item Edges are hyperbolic arcs
+    \item All hyperbolas bounding a cell have a common focus (the site for the cell)
+  \end{enumerate}
+
+  If a diagram is given such that 1 is true and sites can be found to satisfy 2, the diagram coincides with a weighted Voronoi diagram
+  \cite{ash-bolker}
 
 \end{frame}
 

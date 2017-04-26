@@ -6,6 +6,8 @@
 \defcounter {refsection}{0}\relax 
 \beamer@sectionintoc {2}{Relations to Geometric Objects in $\mathbb {R}^3$}{12}{0}{2}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {3}{Algorithms}{20}{0}{3}
+\beamer@sectionintoc {3}{Algorithms}{16}{0}{3}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {4}{Applications}{22}{0}{4}
+\beamer@sectionintoc {4}{Applications}{18}{0}{4}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {5}{Recognition Problem}{23}{0}{5}
